@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class OrderDaoFileImpl implements OrderDao {
 
+    //Using a nested map for indexed behavior with dates and faster lookups.
     private Map<LocalDate, Map<Integer, Order>> ordersMap;
 
     public OrderDaoFileImpl() {

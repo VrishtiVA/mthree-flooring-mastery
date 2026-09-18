@@ -1,5 +1,10 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.view;
 
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+
+import java.time.LocalDate;
+import java.util.List;
+
 public class MainView {
 
     private UserIO userIO;
@@ -23,9 +28,17 @@ public class MainView {
         return userIO.readInt("Enter Selection (#)", 1, 6);
     }
 
-    public void displayUnknownMenuOptionWarning() {
-        userIO.print("Warning: Unknown Menu Option.");
+    public void displayQuittingProgram() {
+        userIO.print("\nQuitting Program...");
     }
+
+    /* ----- Warning Messages ----- */
+
+    public void displayWarning(String message) {
+        userIO.print("Warning: " + message);
+    }
+
+    public void displayUnknownMenuOptionWarning() { displayWarning("Unknown Menu Option."); }
 
     /* ----- Option Headers ----- */
 
@@ -39,4 +52,44 @@ public class MainView {
     public void displayRemoveOrderHeader() { displayHeader("Remove Order"); }
     public void displayExportActiveOrdersHeader() { displayHeader("Export Active Orders"); }
 
+    /* ----- Display Orders ----- */
+
+    public LocalDate askForOrderDate() {
+        return userIO.readDate("Enter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")");
+    }
+
+    public void displayOrder(Order order) {
+        userIO.print(
+            "- Order Number: " + order.getOrderNumber() +
+            "\n- Customer Name: " + order.getCustomerName() +
+            "\n- State: " + order.getState() +
+            "\n- Tax Rate: " + order.getTaxRate() +
+            "\n- Product Type: " + order.getProductType() +
+            "\n- Area: " + order.getArea() +
+            "\n- Cost Per Square Foot: " + order.getCostPerSquareFoot() +
+            "\n- Labor Cost Per Square Foot: " + order.getLaborCostPerSquareFoot() +
+            "\n- Material Cost: " + order.getMaterialCost() +
+            "\n- Labor Cost: " + order.getLaborCost() +
+            "\n- Tax: " + order.getTax() +
+            "\n- Total: " + order.getTotal()
+        );
+    }
+
+    public void displayOrdersForDate(LocalDate date, List<Order> orders) {
+
+        if (orders.isEmpty())
+            userIO.print("There are no orders to display for " + date.format(UserIO.DATE_FORMAT) + ".");
+
+        else {
+            userIO.print("Displaying orders for " + date.format(UserIO.DATE_FORMAT) + ":");
+            userIO.print("");
+
+            //Display each order one by one
+            for (Order order : orders) {
+                displayOrder(order);
+            }
+
+            userIO.print("");
+        }
+    }
 }

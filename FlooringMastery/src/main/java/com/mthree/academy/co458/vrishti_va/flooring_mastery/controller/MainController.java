@@ -1,7 +1,11 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.controller;
 
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.service.MainService;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.view.MainView;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * This controller orchestrates the main/overall program.
@@ -44,12 +48,20 @@ public class MainController {
             }
         } while (keepGoing);
 
+        view.displayQuittingProgram();
     }
 
     private void displayOrdersRoutine() {
         view.displayDisplayOrdersHeader();
 
+        //Ask for order date
+        LocalDate orderDate = view.askForOrderDate();
 
+        //Get appropriate orders
+        List<Order> orders = service.getOrdersByDate(orderDate);
+
+        //Display orders
+        view.displayOrdersForDate(orderDate, orders);
     }
 
     private void addOrderRoutine() {
