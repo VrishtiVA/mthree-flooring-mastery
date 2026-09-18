@@ -20,8 +20,59 @@ public class MainController {
 
         boolean keepGoing = true;
         do {
-
+            switch (view.displayAndGetMenuSelection()) {
+                case 1:
+                    displayOrdersRoutine();
+                    break;
+                case 2:
+                    addOrderRoutine();
+                    break;
+                case 3:
+                    editOrderRoutine();
+                    break;
+                case 4:
+                    removeOrderRoutine();
+                    break;
+                case 5:
+                    exportActiveOrders();
+                    break;
+                case 6:
+                    keepGoing = false;
+                    break;
+                default:
+                    view.displayUnknownMenuOptionWarning();
+            }
         } while (keepGoing);
+
+    }
+
+    private void displayOrdersRoutine() {
+        view.displayDisplayOrdersHeader();
+
+
+    }
+
+    private void addOrderRoutine() {
+        view.displayAddOrderHeader();
+
+
+    }
+
+    private void editOrderRoutine() {
+        view.displayEditOrderHeader();
+
+
+    }
+
+    private void removeOrderRoutine() {
+        view.displayRemoveOrderHeader();
+
+
+    }
+
+    private void exportActiveOrders() {
+        view.displayExportActiveOrdersHeader();
+
 
     }
 

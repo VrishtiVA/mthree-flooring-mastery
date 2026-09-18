@@ -25,7 +25,7 @@ public class UserIOConsoleImpl implements UserIO {
         String userInput;
 
         //Prompt the user and accept string input
-        System.out.print(prompt);
+        System.out.print(prompt + ": ");
         userInput = this.inputReader.nextLine();
 
         //Return the String read in
@@ -42,7 +42,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take int input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextInt();
 
                 //If reached here, return valid input
@@ -69,7 +69,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take int input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextInt();
 
                 //Apply range check
@@ -102,7 +102,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take double type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextDouble();
 
                 //If reached here, return valid input
@@ -129,7 +129,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take double type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextDouble();
 
                 //Apply range check
@@ -162,7 +162,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take float type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextFloat();
 
                 //If reached here, return valid input
@@ -189,7 +189,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take float type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextFloat();
 
                 //Apply range check
@@ -222,7 +222,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take long type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextLong();
 
                 //If reached here, return valid input
@@ -248,7 +248,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take long type input
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInput = this.inputReader.nextLong();
 
                 //Apply range check
@@ -283,7 +283,7 @@ public class UserIOConsoleImpl implements UserIO {
         do {
             try {
                 //Prompt the user and take input for date
-                System.out.print(prompt);
+                System.out.print(prompt + ": ");
                 userInputString = this.inputReader.nextLine().trim();
 
                 //Parse the date input while handling if its optional
