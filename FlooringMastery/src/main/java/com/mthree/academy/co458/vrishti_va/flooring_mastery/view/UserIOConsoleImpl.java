@@ -273,7 +273,7 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     @Override
-    public LocalDate readDate(String prompt, boolean isOptional, LocalDate min, LocalDate max) {
+    public LocalDate readDate(String prompt) {
 
         //Desired input
         LocalDate userInput;
@@ -286,15 +286,42 @@ public class UserIOConsoleImpl implements UserIO {
                 System.out.print(prompt + ": ");
                 userInputString = this.inputReader.nextLine().trim();
 
-                //Parse the date input while handling if its optional
-                if (isOptional) {
-                    userInput = userInputString.isBlank() ? null : LocalDate.parse(userInputString, DATE_FORMAT);
+                //Parse the date input
+                if (userInputString.isBlank()) {
+                    throw new IllegalArgumentException();
                 } else {
                     userInput = LocalDate.parse(userInputString, DATE_FORMAT);
                 }
 
-                //If provided null since optional, allow escape now with null
-                if (userInput == null) return null;
+                //If reached here, return valid input.
+                return userInput;
+
+            } catch (DateTimeParseException | IllegalArgumentException e) {
+                System.out.printf("Invalid input, you should provide a valid date in %s format. Please try again.\n", DATE_FORMAT_PATTERN);
+            }
+        } while (true);
+    }
+
+    @Override
+    public LocalDate readDate(String prompt, LocalDate min, LocalDate max) {
+
+        //Desired input
+        LocalDate userInput;
+        String userInputString;
+
+        //Retry input until acceptable
+        do {
+            try {
+                //Prompt the user and take input for date
+                System.out.print(prompt + ": ");
+                userInputString = this.inputReader.nextLine().trim();
+
+                //Parse the date input
+                if (userInputString.isBlank()) {
+                    throw new IllegalArgumentException();
+                } else {
+                    userInput = LocalDate.parse(userInputString, DATE_FORMAT);
+                }
 
                 //Apply range check
                 if ((min != null && userInput.isBefore(min)) || (min != null && userInput.isAfter(max))) {
@@ -304,13 +331,13 @@ public class UserIOConsoleImpl implements UserIO {
             } catch (DateTimeParseException | IllegalArgumentException e) {
                 //Display appropriate feedback
                 if (min != null && max != null) {
-                    System.out.printf("Invalid input, it should be a valid date in %s format between %s and %s. Please try again.\n", DATE_FORMAT, min, max);
+                    System.out.printf("Invalid input, you should provide a valid date between %s and %s in %s format. Please try again.\n", min, max, DATE_FORMAT_PATTERN);
                 } else if (min != null) {
-                    System.out.printf("Invalid input, it should be a valid date in %s format after %s. Please try again.\n", DATE_FORMAT, min);
+                    System.out.printf("Invalid input, you should provide a valid date after %s in %s format. Please try again.\n", min, DATE_FORMAT_PATTERN);
                 } else if (max != null ){
-                    System.out.printf("Invalid input, it should be a valid date in %s format before %s. Please try again.\n", DATE_FORMAT, max);
+                    System.out.printf("Invalid input, you should provide a valid date before %s in %s format. Please try again.\n", max, DATE_FORMAT_PATTERN);
                 } else {
-                    System.out.printf("Invalid input, it should be a valid date in %s format. Please try again.\n", DATE_FORMAT);
+                    System.out.printf("Invalid input, you should provide a valid date in %s format. Please try again.\n", DATE_FORMAT_PATTERN);
                 }
                 continue;
             }

@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public interface UserIO {
 
-    public DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    //Constants - These are public static final
+    public String DATE_FORMAT_PATTERN = "dd-MM-yyyy";
+    public DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
 
     /**
      * Display a String to the User.
@@ -89,13 +91,19 @@ public interface UserIO {
     long readLong(String prompt, long min, long max);
 
     /**
+     * Prompt the user to enter a date, read in a date input, and return it.
+     * @param prompt The prompt message.
+     * @return The corresponding LocalDate that is read in.
+     */
+    LocalDate readDate(String prompt);
+
+    /**
      * Prompt the user to enter a date that is between a specified range, read in the date, and return it.
      * @param prompt The prompt message.
-     * @param isOptional True if the method could return null for no input, otherwise false.
      * @param min The earliest valid date (inclusive). If not provided (null), allow earlier dates.
      * @param max The latest valid date (inclusive). If not provided (null), allow later dates.
      * @return The corresponding LocalDate that is read in.
      */
-    LocalDate readDate(String prompt, boolean isOptional, LocalDate min, LocalDate max);
+    LocalDate readDate(String prompt, LocalDate min, LocalDate max);
 
 }
