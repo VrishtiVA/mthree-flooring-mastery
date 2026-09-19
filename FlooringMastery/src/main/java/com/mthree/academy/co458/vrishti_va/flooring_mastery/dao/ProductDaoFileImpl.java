@@ -14,11 +14,11 @@ public class ProductDaoFileImpl implements ProductDao {
     private final String PRODUCT_FILE;
 
     //Hold mappings of product type to product
-    private Map<String, Product> productMap;
+    private Map<String, Product> allProducts;
 
     public ProductDaoFileImpl(String productFile) {
         this.PRODUCT_FILE = productFile;
-        this.productMap = new HashMap<>();
+        this.allProducts = new HashMap<>();
     }
 
     /**
@@ -34,13 +34,13 @@ public class ProductDaoFileImpl implements ProductDao {
      * Alternatively, a further improvement idea may be able to consider if the file was modified since the last read.
      */
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws PersistenceException {
 
         //Read products file - see implNote
         loadProductsFromFile();
 
         //Return all products
-        return new ArrayList<>(productMap.values());
+        return new ArrayList<>(allProducts.values());
     }
 
 
@@ -84,7 +84,7 @@ public class ProductDaoFileImpl implements ProductDao {
             currentProduct = unmarshallProduct(fileScanner.nextLine());
 
             //Populate products map
-            productMap.put(currentProduct.getProductType(), currentProduct);
+            allProducts.put(currentProduct.getProductType(), currentProduct);
         }
     }
 

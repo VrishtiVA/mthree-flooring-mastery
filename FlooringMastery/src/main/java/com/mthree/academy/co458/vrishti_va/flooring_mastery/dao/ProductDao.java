@@ -8,7 +8,7 @@ public interface ProductDao {
 
     /**
      * Get all the current product information.
-     * @return A list of products
+     * @return A list of Product objects
      */
     public List<Product> getAllProducts();
 
