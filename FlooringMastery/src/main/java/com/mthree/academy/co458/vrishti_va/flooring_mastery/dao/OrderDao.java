@@ -13,7 +13,7 @@ public interface OrderDao {
      * Add an order and return the previous order stored under the order number.
      * @param orderDate The order date.
      * @param order The order to add.
-     * @return The previous order stored under the order number.
+     * @return The previous order stored under the order number, can be null.
      */
     public Order addOrder(LocalDate orderDate, Order order) throws PersistenceException;
 
@@ -24,7 +24,7 @@ public interface OrderDao {
      * @param orderNumber The order number.
      * @param editedOrder The edited order.
      * @return The original order.
-     * @throws NoSuchOrderException If there order to edit didn't exist.
+     * @throws NoSuchOrderException If the order to edit didn't exist.
      */
     public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException, PersistenceException;
 
