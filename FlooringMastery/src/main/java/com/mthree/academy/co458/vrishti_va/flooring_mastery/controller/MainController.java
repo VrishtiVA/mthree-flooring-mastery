@@ -1,5 +1,7 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.controller;
 
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.NoSuchOrderException;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.EditIntensity;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
@@ -93,10 +95,61 @@ public class MainController {
         }
     }
 
+    /**
+     * @implNote To be adjusted to add EXIT option to abandon (indicated by design).
+     */
     private void editOrderRoutine() {
         view.displayEditOrderHeader();
 
+        //Get order date - Check if any orders for date, otherwise shortcut out.
+        LocalDate orderDate = view.askForOrderDate();
+        if (service.getOrdersByDate(orderDate).isEmpty()) {
+            view.displayNoOrdersOnDateMessage(orderDate);
+            return;
+        }
 
+        //Get order by order number - If not exist, shortcut out
+        Order order;
+        int orderNumber = view.askForOrderNumber();
+        try {
+            order = service.getOrder(orderDate, orderNumber);
+        } catch (NoSuchOrderException e) {
+            view.displayNoSuchOrderMessage();
+            return;
+        }
+
+        //Get updated product types and tax states
+        Map<String, Product> productTypes = service.getAllProductsIndexedByProductType();
+        Map<String, Tax> taxStates = service.getAllTaxesIndexedByState();
+
+        //Create order copy to edit (to not mutate the original order object).
+        Order orderCopy = new Order(order, order.getOrderNumber());
+
+        //Take order edits (mutate the order copy) - shortcut out if no edits made.
+        EditIntensity editIntensity = view.getOrderEdits(orderCopy, productTypes, taxStates);
+        if (editIntensity == EditIntensity.NO_EDITS_MADE) {
+            view.displayNoEditsMadeMessage();
+            return;
+        }
+
+        //Re-calculate if necessary
+        if (editIntensity == EditIntensity.RECALCULATIONS_REQUIRED) {
+            orderCopy = service.calculateOrderCosts(orderCopy);
+        }
+
+        //Ask for confirmation to edit order.
+        if (view.confirmEditOrder(orderCopy)) {
+            try {
+                service.editOrder(orderDate, orderCopy);
+                view.displayEditOrderCompletedMessage();
+
+            } catch (NoSuchOrderException e) {
+                //This shouldn't happen in this implementation, hence a warning.
+                view.displayEditOrderFailedWarning();
+            }
+        } else {
+            view.displayOperationCancelledMessage();
+        }
     }
 
     private void removeOrderRoutine() {

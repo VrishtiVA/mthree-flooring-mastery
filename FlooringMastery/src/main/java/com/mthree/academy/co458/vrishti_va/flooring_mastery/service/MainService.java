@@ -42,7 +42,13 @@ public interface MainService {
      */
     public int addOrder(Order order);
 
-    public void editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException;
+    /**
+     * Edit an order in the system
+     * @param orderDate The order date of the order to edit.
+     * @param editedOrder The edited copy of the order object.
+     * @throws NoSuchOrderException If the order to edit didn't originally exist in the system.
+     */
+    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException;
 
     public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException;
 

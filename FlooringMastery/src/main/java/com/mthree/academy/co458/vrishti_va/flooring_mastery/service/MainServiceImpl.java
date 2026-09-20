@@ -127,7 +127,7 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException {
+    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException {
         orderDao.editOrder(orderDate, editedOrder.getOrderNumber(), editedOrder);
     }
 

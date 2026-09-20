@@ -70,6 +70,9 @@ public class OrderDaoFileImpl implements OrderDao {
             if (originalOrder == null)
                 throw new NoSuchOrderException("There is no such order to edit.");
 
+            //Persist edits
+            writeOrdersToFileByDate(orderDate);
+
             //Return the original order if reached here.
             return originalOrder;
 
@@ -92,6 +95,9 @@ public class OrderDaoFileImpl implements OrderDao {
             removedOrder = ordersOnDateMap.remove(orderNumber);
             if (removedOrder == null)
                 throw new NoSuchOrderException("There is no such order to remove.");
+
+            //Persist edits
+            writeOrdersToFileByDate(orderDate);
 
             //Return the removed order
             return removedOrder;

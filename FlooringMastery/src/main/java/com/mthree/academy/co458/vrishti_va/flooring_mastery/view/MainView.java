@@ -1,5 +1,6 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.view;
 
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.EditIntensity;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
@@ -71,11 +72,27 @@ public class MainView {
 
     /* ----- Warning Messages ----- */
 
-    public void displayWarning(String message) {
+    private void displayWarning(String message) {
         userIO.print("Warning: " + message);
     }
 
     public void displayUnknownMenuOptionWarning() { displayWarning("Unknown Menu Option."); }
+
+    public void displayEditOrderFailedWarning() {
+        displayWarning("The order to edit no longer exists.");
+    }
+
+    public void displayNoOrdersOnDateMessage(LocalDate date) {
+        userIO.print("There are no orders for " + date.format(UserIO.DATE_FORMAT) + ".");
+    }
+
+    public void displayNoSuchOrderMessage() {
+        userIO.print("There is no such order.");
+    }
+
+    public void displayNoEditsMadeMessage() {
+        userIO.print("There were no edits were made.");
+    }
 
     /* ----- Option Headers ----- */
 
@@ -93,6 +110,10 @@ public class MainView {
 
     public void displayAddOrderCompletedMessage(int orderNumber) {
         userIO.print("\nOrder has been added, with Order Number " + orderNumber + ".");
+    }
+
+    public void displayEditOrderCompletedMessage() {
+        userIO.print("\nOrder has been modified.");
     }
 
     /* ----- Display Items ----- */
@@ -122,10 +143,10 @@ public class MainView {
 
     public void displayOrdersForDate(LocalDate date, List<Order> orders) {
 
-        if (orders.isEmpty())
-            userIO.print("There are no orders to display for " + date.format(UserIO.DATE_FORMAT) + ".");
+        if (orders.isEmpty()) {
+            displayNoOrdersOnDateMessage(date);
 
-        else {
+        } else {
             userIO.print("Displaying orders for " + date.format(UserIO.DATE_FORMAT) + ":");
             userIO.print("");
 
@@ -165,18 +186,21 @@ public class MainView {
         return userIO.readDate("Enter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")");
     }
 
+    public int askForOrderNumber() {
+        return userIO.readInt("Enter Order Number");
+    }
+
     /**
      * Get new order details from user.
      * This method will ensure that the inputs provided are valid.
-     * @param productTypes The available products, indexed by product type.
-     * @param taxStates The available taxes, indexed by state.
-     * @return If completed, the method returns an Order object containing the
-     *         order date, customer name, state, product type, and area.
+     * @param productTypes The currently available products, indexed by product type.
+     * @param taxStates The currently available taxes, indexed by state.
+     * @return If completed, the method returns a populated Order object (without an order number) containing the
+     *         order date, customer name, state, tax rate, product type, cost and labor cost per sq ft, and area.
      *         Otherwise, null.
      *
-     *
      * @implNote
-     * Future consideration: Add an escape for these if user gets lazy and wishes to abandon operation.
+     * Future consideration: Add an escape for these if user becomes lazy and wishes to abandon operation.
      */
     public Order getNewOrder(Map<String, Product> productTypes, Map<String, Tax> taxStates) {
 
@@ -207,11 +231,11 @@ public class MainView {
         do {
             customerName = userIO.readString("Enter Customer Name");
             customerName = validateCustomerNameInput(customerName);
-        } while (customerName == null); //Maybe null is not the best invalid indicator, given that it can be optional.
+        } while (customerName == null);
 
         //Obtain a valid state
         do {
-            state = userIO.readString("Enter State (Abbreviation)");
+            state = userIO.readString("Enter State Abbreviation");
             tax = validateStateInput(state, taxStates);
         } while (tax == null);
 
@@ -224,7 +248,7 @@ public class MainView {
 
         //Obtain a valid area
         do {
-            area = userIO.readBigDecimal("Enter Area (Sq Ft)");
+            area = userIO.readBigDecimal("Enter Area (Sq Ft)", false);
             area = validateAreaInput(area);
         } while (area == null);
 
@@ -244,6 +268,119 @@ public class MainView {
     }
 
     /**
+     * Get the edited order details.
+     * This method will collect updates and mutate the order object passed in,
+     * therefore, it is highly recommended to pass in a copy of the object rather than the mutable object itself.
+     * The method will indicate if recalculations are required, which is when updates are made to the product type, state, area.
+     * @param productTypes The currently available products, indexed by product type.
+     * @param taxStates The currently available taxes, indexed by state.
+     * @return {@code EditIntensity.RECALCULATIONS_REQUIRED} if recalculations are required,
+     *         {@code EditIntensity.EDITS_MADE} if edits were made but recalculations aren't required,
+     *         {@code EditIntensity.NO_EDITS} if no edits were made.
+     */
+    public EditIntensity getOrderEdits(Order orderCopy, Map<String, Product> productTypes, Map<String, Tax> taxStates) {
+
+        //Display edit order instructions
+        userIO.print(
+            "\nYou are now editing an order." +
+            "\nFor each editable field, you will be prompted and shown the current value of the field." +
+            "\nShould you wish to edit the field, input the new data." +
+            "\nIf you do not wish to edit the field, simply press enter to continue." +
+            "\nDon't worry if something goes wrong, you will be asked to confirm the edited order at the end."
+        );
+        askToProceed();
+
+        //Desired inputs
+        String customerName;
+        String state;
+        String productType;
+        BigDecimal area;
+
+        Tax tax;
+        Product product;
+
+        //Flag to indicate if recalculations are needed.
+        boolean editsMade = false;
+        boolean recalculationsRequired = false;
+
+        //Obtain customer name
+        do {
+            customerName = userIO.readString("Enter Customer Name (" + orderCopy.getCustomerName() + ")");
+
+            //Skip if no input, otherwise validate
+            if (customerName.isBlank()) break;
+            customerName = validateCustomerNameInput(customerName);
+
+            //If valid, hold valid field in order copy
+            if (customerName != null) {
+                orderCopy.setCustomerName(customerName);
+                editsMade = true;
+            }
+
+        } while (customerName == null);
+
+        //Obtain a valid state
+        do {
+            state = userIO.readString("Enter State Abbreviation (" + orderCopy.getState() + ")");
+
+            //Skip if no input, otherwise validate
+            if (state.isBlank()) break;
+            tax = validateStateInput(state, taxStates);
+
+            //If valid, hold tax updates and indicate recalculation required.
+            if (tax != null) {
+                orderCopy.setState(tax.getStateAbbreviation());
+                orderCopy.setTaxRate(tax.getTaxRate());
+                editsMade = true;
+                recalculationsRequired = true;
+            }
+
+        } while (tax == null);
+
+        //Obtain a valid product type
+        do {
+            displayProducts(productTypes.values());
+            productType = userIO.readString("Enter Product Type (" + orderCopy.getProductType() + ")");
+
+            //Skip if no input, otherwise validate
+            if (productType.isBlank()) break;
+            product = validateProductTypeInput(productType, productTypes);
+
+            //If valid, hold product updates and indicate recalculation required.
+            if (product != null) {
+                orderCopy.setProductType(product.getProductType());
+                orderCopy.setCostPerSquareFoot(product.getCostPerSquareFoot());
+                orderCopy.setLaborCostPerSquareFoot(product.getLaborCostPerSquareFoot());
+                editsMade = true;
+                recalculationsRequired = true;
+            }
+
+        } while (product == null);
+
+        //Obtain a valid area
+        do {
+            area = userIO.readBigDecimal("Enter Area (" + orderCopy.getArea() + " Sq Ft)", true);
+
+            //Skip if no input, otherwise validate
+            if (area == null) break;
+            area = validateAreaInput(area);
+
+            //If valid, hold valid field in order copy
+            if (area != null) {
+                orderCopy.setArea(area);
+                editsMade = true;
+                recalculationsRequired = true;
+            }
+
+        } while (area == null);
+
+        //Return intensity of edits made.
+        return recalculationsRequired ? EditIntensity.RECALCULATIONS_REQUIRED :
+                editsMade ? EditIntensity.EDITS_MADE :
+                EditIntensity.NO_EDITS_MADE;
+    }
+
+    /**
      * Ask the user to confirm if they would like to add a specific order.
      * @param order The order to preview and confirm.
      * @return True for yes, False for no.
@@ -251,6 +388,16 @@ public class MainView {
     public boolean confirmAddOrder(Order order) {
         displayOrder(order, false);
         return askYesNoQuestion("Are you sure you wish to add this order?");
+    }
+
+    /**
+     * Ask the user to confirm if they would like to update a specific order.
+     * @param order The order to preview and confirm.
+     * @return True for yes, False for no.
+     */
+    public boolean confirmEditOrder(Order order) {
+        displayOrder(order, true);
+        return askYesNoQuestion("Are you sure you wish to update this order?");
     }
 
     /* ----- User Input Validation ----- */
@@ -347,4 +494,5 @@ public class MainView {
             return null;
         }
     }
+
 }
