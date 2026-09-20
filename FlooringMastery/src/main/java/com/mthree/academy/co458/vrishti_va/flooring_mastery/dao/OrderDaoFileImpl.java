@@ -96,7 +96,7 @@ public class OrderDaoFileImpl implements OrderDao {
             if (removedOrder == null)
                 throw new NoSuchOrderException("There is no such order to remove.");
 
-            //Persist edits
+            //Persist removal
             writeOrdersToFileByDate(orderDate);
 
             //Return the removed order

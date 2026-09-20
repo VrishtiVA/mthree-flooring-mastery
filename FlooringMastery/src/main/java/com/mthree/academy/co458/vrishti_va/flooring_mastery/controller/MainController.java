@@ -145,7 +145,7 @@ public class MainController {
 
             } catch (NoSuchOrderException e) {
                 //This shouldn't happen in this implementation, hence a warning.
-                view.displayEditOrderFailedWarning();
+                view.displayEditOrderLostWarning();
             }
         } else {
             view.displayOperationCancelledMessage();
@@ -155,6 +155,36 @@ public class MainController {
     private void removeOrderRoutine() {
         view.displayRemoveOrderHeader();
 
+        //Get order date - Check if any orders for date, otherwise shortcut out.
+        LocalDate orderDate = view.askForOrderDate();
+        if (service.getOrdersByDate(orderDate).isEmpty()) {
+            view.displayNoOrdersOnDateMessage(orderDate);
+            return;
+        }
+
+        //Get order by order number - If not exist, shortcut out
+        Order order;
+        int orderNumber = view.askForOrderNumber();
+        try {
+            order = service.getOrder(orderDate, orderNumber);
+        } catch (NoSuchOrderException e) {
+            view.displayNoSuchOrderMessage();
+            return;
+        }
+
+        //Ask for confirmation to remove order.
+        if (view.confirmRemoveOrder(order)) {
+            try {
+                service.removeOrder(orderDate, orderNumber);
+                view.displayRemoveOrderCompletedMessage();
+
+            } catch (NoSuchOrderException e) {
+                //This shouldn't happen in this implementation, hence a warning.
+                view.displayRemoveOrderLostWarning();
+            }
+        } else {
+            view.displayOperationCancelledMessage();
+        }
 
     }
 

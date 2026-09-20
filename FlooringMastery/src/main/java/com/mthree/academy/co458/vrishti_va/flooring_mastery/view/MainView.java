@@ -78,8 +78,12 @@ public class MainView {
 
     public void displayUnknownMenuOptionWarning() { displayWarning("Unknown Menu Option."); }
 
-    public void displayEditOrderFailedWarning() {
+    public void displayEditOrderLostWarning() {
         displayWarning("The order to edit no longer exists.");
+    }
+
+    public void displayRemoveOrderLostWarning() {
+        displayWarning("The order to remove no longer exists.");
     }
 
     public void displayNoOrdersOnDateMessage(LocalDate date) {
@@ -114,6 +118,10 @@ public class MainView {
 
     public void displayEditOrderCompletedMessage() {
         userIO.print("\nOrder has been modified.");
+    }
+
+    public void displayRemoveOrderCompletedMessage() {
+        userIO.print("\nOrder has been removed.");
     }
 
     /* ----- Display Items ----- */
@@ -398,6 +406,16 @@ public class MainView {
     public boolean confirmEditOrder(Order order) {
         displayOrder(order, true);
         return askYesNoQuestion("Are you sure you wish to update this order?");
+    }
+
+    /**
+     * Ask the user to confirm if they would like to remove a specific order.
+     * @param order The order to preview and confirm.
+     * @return True for yes, False for no.
+     */
+    public boolean confirmRemoveOrder(Order order) {
+        displayOrder(order, true);
+        return askYesNoQuestion("Are you sure you wish to remove this order?");
     }
 
     /* ----- User Input Validation ----- */
