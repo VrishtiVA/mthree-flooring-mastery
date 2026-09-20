@@ -100,6 +100,9 @@ public class TaxDaoFileImpl implements TaxDao {
             //Populate taxes map
             allTaxes.put(currentTax.getStateName().toLowerCase(), currentTax);
         }
+
+        //Clean up
+        fileScanner.close();
     }
 
 }

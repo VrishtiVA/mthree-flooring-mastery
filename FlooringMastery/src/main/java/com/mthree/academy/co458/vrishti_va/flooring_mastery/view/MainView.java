@@ -106,7 +106,7 @@ public class MainView {
 
         //Display remaining order details
         userIO.print(
-            "\n- Customer Name: " + order.getCustomerName() +
+            "- Customer Name: " + order.getCustomerName() +
             "\n- State: " + order.getState() +
             "\n- Tax Rate: " + order.getTaxRate() +
             "\n- Product Type: " + order.getProductType() +

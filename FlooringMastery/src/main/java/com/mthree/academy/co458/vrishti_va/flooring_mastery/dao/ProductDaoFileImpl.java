@@ -101,6 +101,9 @@ public class ProductDaoFileImpl implements ProductDao {
             //Populate products map, with key in lower case.
             allProducts.put(currentProduct.getProductType().toLowerCase(), currentProduct);
         }
+
+        //Clean up
+        fileScanner.close();
     }
 
 }

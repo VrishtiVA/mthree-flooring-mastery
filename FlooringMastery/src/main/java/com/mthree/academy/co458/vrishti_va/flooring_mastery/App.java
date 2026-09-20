@@ -15,7 +15,7 @@ public class App {
         MainView mainView = new MainView(new UserIOConsoleImpl());
         TaxDao taxDao = new TaxDaoFileImpl("Data/Taxes.txt");
         ProductDao productDao = new ProductDaoFileImpl("Data/Products.txt");
-        OrderDao orderDao = new OrderDaoFileImpl();
+        OrderDao orderDao = new OrderDaoFileImpl("Orders", "Orders_");
         MainService mainService = new MainServiceImpl(orderDao, productDao, taxDao);
         MainController mainController = new MainController(mainView, mainService);
 
