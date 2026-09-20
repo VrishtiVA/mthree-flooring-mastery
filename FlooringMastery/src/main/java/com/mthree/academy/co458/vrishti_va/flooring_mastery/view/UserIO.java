@@ -1,5 +1,6 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.view;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -8,6 +9,12 @@ public interface UserIO {
     //Constants - These are public static final
     public String DATE_FORMAT_PATTERN = "dd-MM-yyyy";
     public DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
+
+    /**
+     * Display a message to the user, and wait for the line to be read in.
+     * @param message The String displayed.
+     */
+    public void readLine(String message);
 
     /**
      * Display a String to the User.
@@ -105,5 +112,21 @@ public interface UserIO {
      * @return The corresponding LocalDate that is read in.
      */
     LocalDate readDate(String prompt, LocalDate min, LocalDate max);
+
+    /**
+     * Prompt the user to enter a BigDecimal, read in a BigDecimal input, and return it.
+     * @param prompt The prompt message.
+     * @return The corresponding BigDecimal that is read in.
+     */
+    BigDecimal readBigDecimal(String prompt);
+
+    /**
+     * Prompt the user to enter a BigDecimal that is between a specified range, read in the BigDecimal, and return it.
+     * @param prompt The prompt message.
+     * @param min The min value (inclusive).
+     * @param max The min value (inclusive).
+     * @return The corresponding LocalDate that is read in.
+     */
+    BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max);
 
 }

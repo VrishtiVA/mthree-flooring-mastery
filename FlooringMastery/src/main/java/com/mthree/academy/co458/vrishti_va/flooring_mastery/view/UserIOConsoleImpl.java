@@ -1,5 +1,6 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.view;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
@@ -16,6 +17,14 @@ public class UserIOConsoleImpl implements UserIO {
     @Override
     public void print(String message) {
         System.out.println(message);
+    }
+
+    @Override
+    public void readLine(String message) {
+
+        //Prompt the user and wait for user to press enter.
+        System.out.print(message);
+        this.inputReader.nextLine();
     }
 
     @Override
@@ -324,21 +333,76 @@ public class UserIOConsoleImpl implements UserIO {
                 }
 
                 //Apply range check
-                if ((min != null && userInput.isBefore(min)) || (min != null && userInput.isAfter(max))) {
+                if ((min != null && userInput.isBefore(min)) || (max != null && userInput.isAfter(max))) {
                     throw new IllegalArgumentException();
                 }
 
             } catch (DateTimeParseException | IllegalArgumentException e) {
                 //Display appropriate feedback
                 if (min != null && max != null) {
-                    System.out.printf("Invalid input, you should provide a valid date between %s and %s in %s format. Please try again.\n", min, max, DATE_FORMAT_PATTERN);
+                    System.out.printf("Invalid input, you should provide a valid date between %s and %s in %s format. Please try again.\n", min.format(DATE_FORMAT), max.format(DATE_FORMAT), DATE_FORMAT_PATTERN);
                 } else if (min != null) {
-                    System.out.printf("Invalid input, you should provide a valid date after %s in %s format. Please try again.\n", min, DATE_FORMAT_PATTERN);
+                    System.out.printf("Invalid input, you should provide a valid date after %s in %s format. Please try again.\n", min.format(DATE_FORMAT), DATE_FORMAT_PATTERN);
                 } else if (max != null ){
-                    System.out.printf("Invalid input, you should provide a valid date before %s in %s format. Please try again.\n", max, DATE_FORMAT_PATTERN);
+                    System.out.printf("Invalid input, you should provide a valid date before %s in %s format. Please try again.\n", max.format(DATE_FORMAT), DATE_FORMAT_PATTERN);
                 } else {
                     System.out.printf("Invalid input, you should provide a valid date in %s format. Please try again.\n", DATE_FORMAT_PATTERN);
                 }
+                continue;
+            }
+
+            //If reached here, return valid input.
+            return userInput;
+
+        } while (true);
+    }
+
+    @Override
+    public BigDecimal readBigDecimal(String prompt) {
+
+        //Desired input
+        String userInputString;
+        BigDecimal userInput;
+
+        //Retry input until acceptable
+        do {
+            try {
+                //Prompt the user and take BigDecimal type input
+                System.out.print(prompt + ": ");
+                userInputString = this.inputReader.nextLine().trim();
+                userInput = new BigDecimal(userInputString);
+
+                //If reached here, return valid input
+                return userInput;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please try again.");
+            }
+        } while (true);
+    }
+
+    @Override
+    public BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max) {
+
+        //Desired input
+        String userInputString;
+        BigDecimal userInput;
+
+        //Retry input until acceptable
+        do {
+            try {
+                //Prompt the user and take BigDecimal type input
+                System.out.print(prompt + ": ");
+                userInputString = this.inputReader.nextLine().trim();
+                userInput = new BigDecimal(userInputString);
+
+                //Apply range check
+                if (userInput.compareTo(min) < 0 || userInput.compareTo(max) > 0) {
+                    throw new IllegalArgumentException();
+                }
+
+            } catch (IllegalArgumentException e) {
+                System.out.printf("Invalid input, it should be %s <= x <= %s. Please try again.\n", min, max);
                 continue;
             }
 
