@@ -211,7 +211,7 @@ public class MainView {
 
         //Obtain a valid state
         do {
-            state = userIO.readString("Enter State");
+            state = userIO.readString("Enter State (Abbreviation)");
             tax = validateStateInput(state, taxStates);
         } while (tax == null);
 
@@ -232,7 +232,7 @@ public class MainView {
         Order newOrder = new Order();
         newOrder.setOrderDate(orderDate);
         newOrder.setCustomerName(customerName);
-        newOrder.setState(tax.getStateName());
+        newOrder.setState(tax.getStateAbbreviation());
         newOrder.setTaxRate(tax.getTaxRate());
         newOrder.setProductType(product.getProductType());
         newOrder.setCostPerSquareFoot(product.getCostPerSquareFoot());
@@ -295,14 +295,14 @@ public class MainView {
 
     /**
      * Validate that the state is selected from the available tax states.
-     * @param state The state to validate.
+     * @param state The state abbreviation to validate.
      * @param taxStates The available tax states.
      * @return The corresponding Tax object for the tax state, null if invalid.
      */
     private Tax validateStateInput(String state, Map<String, Tax> taxStates) {
 
         //Get tax
-        Tax tax = taxStates.get(state.trim().toLowerCase());
+        Tax tax = taxStates.get(state.trim().toUpperCase());
 
         //Validate tax
         if (tax != null) {
@@ -322,7 +322,7 @@ public class MainView {
     private Product validateProductTypeInput(String productType, Map<String, Product> products) {
 
         //Get product
-        Product product = products.get(productType.trim().toLowerCase());
+        Product product = products.get(productType.trim().toUpperCase());
 
         //Validate product
         if (product != null) {

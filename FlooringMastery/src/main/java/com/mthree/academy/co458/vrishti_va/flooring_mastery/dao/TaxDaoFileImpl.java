@@ -13,7 +13,7 @@ public class TaxDaoFileImpl implements TaxDao {
     private static final String DELIMITER = "::";
     private final String TAX_FILE;
 
-    //Hold mappings of tax states to taxes
+    //Hold mappings of tax states abbreviations to taxes
     private Map<String, Tax> allTaxes;
 
     public TaxDaoFileImpl(String taxFile) {
@@ -75,7 +75,7 @@ public class TaxDaoFileImpl implements TaxDao {
      * Read the taxes file and reflect its content into the taxes map.
      * This method assumes the file will include a header row.
      * @throws PersistenceException If the method is unable to read from the taxes file.
-     * @implNote Loading the state key as lower case intends to make searching the map easier.
+     * @implNote Loading the state abbreviation key as upper case intends to make searching the map easier.
      */
     private void loadTaxesFromFile() throws PersistenceException {
 
@@ -98,7 +98,7 @@ public class TaxDaoFileImpl implements TaxDao {
             currentTax = unmarshallTax(fileScanner.nextLine());
 
             //Populate taxes map
-            allTaxes.put(currentTax.getStateName().toLowerCase(), currentTax);
+            allTaxes.put(currentTax.getStateAbbreviation().toUpperCase(), currentTax);
         }
 
         //Clean up

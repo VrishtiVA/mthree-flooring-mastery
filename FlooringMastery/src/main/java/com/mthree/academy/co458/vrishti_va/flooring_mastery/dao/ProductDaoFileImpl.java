@@ -76,7 +76,7 @@ public class ProductDaoFileImpl implements ProductDao {
      * Read the products file and reflect its content into the products map.
      * This method assumes the file will include a header row.
      * @throws PersistenceException If the method is unable to read from the products file.
-     * @implNote Loading the key in lower case intends to help make searching the map easier.
+     * @implNote Loading the key in upper case intends to help make searching the map easier.
      */
     private void loadProductsFromFile() throws PersistenceException {
 
@@ -99,7 +99,7 @@ public class ProductDaoFileImpl implements ProductDao {
             currentProduct = unmarshallProduct(fileScanner.nextLine());
 
             //Populate products map, with key in lower case.
-            allProducts.put(currentProduct.getProductType().toLowerCase(), currentProduct);
+            allProducts.put(currentProduct.getProductType().toUpperCase(), currentProduct);
         }
 
         //Clean up
