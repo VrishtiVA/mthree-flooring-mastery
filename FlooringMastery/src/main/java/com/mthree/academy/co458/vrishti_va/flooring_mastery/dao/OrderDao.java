@@ -23,25 +23,28 @@ public interface OrderDao {
      * @param orderDate The order date.
      * @param orderNumber The order number.
      * @param editedOrder The edited order.
-     * @return The original order, or null if there was no original order to update.
+     * @return The original order.
+     * @throws NoSuchOrderException If there order to edit didn't exist.
      */
-    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder);
+    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException;
 
     /**
      * Remove a specific order, identified by order date and order number.
      * @param orderDate The order date.
      * @param orderNumber The order number.
-     * @return The removed order, or null if the order to remove didn't exist.
+     * @return The removed order.
+     * @throws NoSuchOrderException If the order to remove didn't exist.
      */
-    public Order removeOrder(LocalDate orderDate, int orderNumber);
+    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException;
 
     /**
      * Get a specific order, identified by order date and order number.
      * @param orderDate The order date.
      * @param orderNumber The order number.
      * @return The requested order, or null if it doesn't exist.
+     * @throws NoSuchOrderException If the order to get didn't exist
      */
-    public Order getOrder(LocalDate orderDate, int orderNumber);
+    public Order getOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException;
 
     /**
      * Get all orders with the same order date.

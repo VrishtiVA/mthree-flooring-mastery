@@ -58,43 +58,68 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     @Override
-    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) {
+    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException {
 
         //Find orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.get(orderDate);
+        Order originalOrder;
 
-        //Replace with edited order and return the original order, or null if the original didn't exist.
-        if (ordersOnDateMap != null)
-            return ordersOnDateMap.replace(orderNumber, editedOrder);
-        else
-            return null;
+        try {
+            //Try to replace order - replace would return null rather than replace a non-existing order.
+            originalOrder = ordersOnDateMap.replace(orderNumber, editedOrder);
+            if (originalOrder == null)
+                throw new NoSuchOrderException("There is no such order to edit.");
+
+            //Return the original order if reached here.
+            return originalOrder;
+
+        } catch (NullPointerException e) {
+            //If there were no orders on this date, the order to edit doesn't exist.
+            throw new NoSuchOrderException("There is no such order to edit.");
+        }
     }
 
 
     @Override
-    public Order removeOrder(LocalDate orderDate, int orderNumber) {
+    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
 
         //Find orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.get(orderDate);
+        Order removedOrder;
 
-        //Remove and return the removed order, or null if it didn't exist.
-        if (ordersOnDateMap != null)
-            return ordersOnDateMap.remove(orderNumber);
-        else
-            return null;
+        try {
+            //Try to remove order - remove would return null if order doesn't exist.
+            removedOrder = ordersOnDateMap.remove(orderNumber);
+            if (removedOrder == null)
+                throw new NoSuchOrderException("There is no such order to remove.");
+
+            //Return the removed order
+            return removedOrder;
+
+        } catch (NullPointerException e) {
+            throw new NoSuchOrderException("There is no such order to remove.");
+        }
     }
 
     @Override
-    public Order getOrder(LocalDate orderDate, int orderNumber) {
+    public Order getOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
 
         //Find orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.get(orderDate);
+        Order retrievedOrder;
 
-        //Return order if found, otherwise null
-        if (ordersOnDateMap != null)
-            return ordersOnDateMap.get(orderNumber);
-        else
-            return null;
+        try {
+            //Try to get the order - would be null if it doesn't exist.
+            retrievedOrder = ordersOnDateMap.get(orderNumber);
+            if (retrievedOrder == null)
+                throw new NoSuchOrderException("There is no such order to get.");
+
+            //Return retrieved order
+            return retrievedOrder;
+
+        } catch (NullPointerException e) {
+            throw new NoSuchOrderException("There is no such order to get.");
+        }
     }
 
     @Override
@@ -204,7 +229,8 @@ public class OrderDaoFileImpl implements OrderDao {
 
             //Marshall order
             orderString = marshallOrder(order);
-            //Write order
+
+            //Write order immediately
             printWriter.println(orderString);
             printWriter.flush();
         }

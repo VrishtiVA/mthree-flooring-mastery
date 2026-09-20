@@ -1,9 +1,6 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.service;
 
-import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.ExportDao;
-import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.OrderDao;
-import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.ProductDao;
-import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.TaxDao;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.*;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
@@ -102,7 +99,7 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Order getOrder(LocalDate orderDate, int orderNumber) {
+    public Order getOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
         return orderDao.getOrder(orderDate, orderNumber);
     }
 
@@ -130,13 +127,13 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) {
-
+    public void editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException {
+        orderDao.editOrder(orderDate, editedOrder.getOrderNumber(), editedOrder);
     }
 
     @Override
-    public void removeOrder(LocalDate orderDate, int orderNumber) {
-
+    public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
+        orderDao.removeOrder(orderDate, orderNumber);
     }
 
 }
