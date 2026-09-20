@@ -2,16 +2,12 @@ package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderDaoFileImpl implements OrderDao {
@@ -33,13 +29,16 @@ public class OrderDaoFileImpl implements OrderDao {
         this.ORDERS_FILE_NAME_BASE = ordersFileNameBase;
         this.ORDERS_FILE_EXTENSION = ordersFileExtension;
 
-        //Read file initially
-        //...
-
-        //Remember to set up last order number after file read. !
-        this.lastOrderNumber = 0;
+        //Read file initially and set up last order number.
+        loadAllOrdersFromFiles();
+        this.lastOrderNumber = findLastOrderNumber();
     }
 
+    /**
+     * Get the next order number that can be used for an order.
+     * @return A new order number
+     * @implNote The implementation does not recycle order numbers.
+     */
     @Override
     public int getNextOrderNumber() {
         return ++lastOrderNumber;
@@ -185,13 +184,14 @@ public class OrderDaoFileImpl implements OrderDao {
      * @param orderString The order string to unmarshall.
      * @return The corresponding order object.
      */
-    private Order unmarshallOrder(String orderString) {
+    private Order unmarshallOrder(String orderString, LocalDate orderDate) {
 
         //Split the order string
         String[] orderLine = orderString.split(DELIMITER);
 
         //Rebuild the order object.
         Order order = new Order(Integer.parseInt(orderLine[0]));
+        order.setOrderDate(orderDate);
         order.setCustomerName(orderLine[1]);
         order.setState(orderLine[2]);
         order.setTaxRate(new BigDecimal(orderLine[3]));
@@ -210,9 +210,68 @@ public class OrderDaoFileImpl implements OrderDao {
 
     /**
      * Read in all files in the orders folder, and populate orders map.
+     * @implNote <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">Refreshing documentation</a>
      */
-    private void loadAllOrdersFromFiles() {
+    private void loadAllOrdersFromFiles() throws PersistenceException {
 
+        //Find orders directory and gather all order files.
+        File ordersDirectory = new File(ORDERS_DIRECTORY);
+        File[] orderFiles;
+        try {
+            //Ensure directory exists
+            if (!ordersDirectory.exists() || !ordersDirectory.isDirectory())
+                throw new FileNotFoundException("Unable to find Orders.");
+
+            //Get list of order files
+            orderFiles = ordersDirectory.listFiles();
+            if (orderFiles == null)
+                throw new FileNotFoundException("Unable to find Orders");
+
+        } catch (SecurityException | FileNotFoundException e) {
+            //List files can throw a security exception if it can't access.
+            throw new PersistenceException("Unable to access Orders");
+        }
+
+        //Read and load orders from each file
+        for (File file : orderFiles) {
+            loadOrdersFromFile(file.getName());
+        }
+
+    }
+
+    private void loadOrdersFromFile(String filename) throws PersistenceException {
+
+        //Work out date to populate for
+        LocalDate orderDate;
+        try {
+            orderDate = LocalDate.parse(filename.substring(7, 15), DateTimeFormatter.ofPattern("MMddyyyy"));
+        } catch (DateTimeParseException e) {
+            throw new PersistenceException("Unable to load Orders.");
+        }
+
+        //Try open file in read mode.
+        Scanner fileScanner;
+        try {
+            fileScanner = new Scanner(new BufferedReader(new FileReader(ORDERS_DIRECTORY + "/" + filename)));
+        } catch (FileNotFoundException e) {
+            throw new PersistenceException("Unable to load Orders.");
+        }
+
+        //Skip header row
+        fileScanner.nextLine();
+
+        //Read each order and populate map
+        String orderString;
+        Order order;
+        while (fileScanner.hasNextLine()) {
+
+            //Unmarshall order
+            orderString = fileScanner.nextLine();
+            order = unmarshallOrder(orderString, orderDate);
+
+            //Populate map
+            allOrders.computeIfAbsent(orderDate, key -> new HashMap<>()).put(order.getOrderNumber(), order);
+        }
     }
 
     /**
@@ -261,5 +320,18 @@ public class OrderDaoFileImpl implements OrderDao {
 
         //Clean up
         printWriter.close();
+    }
+
+    private int findLastOrderNumber() {
+
+        //If no orders, shortcut highest as 0.
+        if (allOrders.isEmpty()) return 0;
+
+        OptionalInt highestOrderNumber = allOrders.values().stream()
+                .flatMap(ordersOnDate -> ordersOnDate.values().stream()) //Flatten into collection of orders
+                .mapToInt(Order::getOrderNumber) //Simplify into collection of order numbers
+                .max(); //Find maximum order number
+
+        return highestOrderNumber.isPresent() ? highestOrderNumber.getAsInt() : 0;
     }
 }

@@ -46,7 +46,7 @@ public class MainView {
      * Prompt the user to press enter to proceed
      */
     public void askToProceed() {
-        userIO.readLine("Press enter to proceed...");
+        userIO.readLine("Press enter to proceed ...");
     }
 
     public boolean askYesNoQuestion(String prompt) {
@@ -73,10 +73,10 @@ public class MainView {
     /* ----- Warning Messages ----- */
 
     private void displayWarning(String message) {
-        userIO.print("Warning: " + message);
+        userIO.print("\nWarning: " + message);
     }
 
-    public void displayUnknownMenuOptionWarning() { displayWarning("Unknown Menu Option."); }
+    public void displayUnknownMenuOptionWarning() { displayWarning("\nUnknown Menu Option."); }
 
     public void displayEditOrderLostWarning() {displayWarning("The order to edit no longer exists.");}
     public void displayRemoveOrderLostWarning() {displayWarning("The order to remove no longer exists.");}
@@ -86,15 +86,15 @@ public class MainView {
     public void displayExportActiveOrdersFailedWarning() {displayWarning("Unable to export active orders.");}
 
     public void displayNoOrdersOnDateMessage(LocalDate date) {
-        userIO.print("There are no orders for " + date.format(UserIO.DATE_FORMAT) + ".");
+        userIO.print("\nThere are no orders for " + date.format(UserIO.DATE_FORMAT) + ".");
     }
 
     public void displayNoSuchOrderMessage() {
-        userIO.print("There is no such order.");
+        userIO.print("\nThere is no such order.");
     }
 
     public void displayNoEditsMadeMessage() {
-        userIO.print("There were no edits made.");
+        userIO.print("\nThere were no edits made.");
     }
 
     /* ----- Option Headers ----- */
@@ -111,12 +111,12 @@ public class MainView {
 
     /* ----- Operation Complete Messages ----- */
 
-    private void displaySuccess(String message) {userIO.print("Success: " + message);}
+    private void displaySuccess(String message) {userIO.print("\nSuccess: " + message);}
 
-    public void displayAddOrderCompletedMessage(int orderNumber) {displaySuccess("\nOrder has been added, with Order Number " + orderNumber + ".");}
-    public void displayEditOrderCompletedMessage() {displaySuccess("\nOrder has been modified.");}
-    public void displayRemoveOrderCompletedMessage() {displaySuccess("\nOrder has been removed.");}
-    public void displayExportActiveOrdersCompleted() {displaySuccess("\nActive orders have been exported.");}
+    public void displayAddOrderCompletedMessage(int orderNumber) {displaySuccess("Order has been added, with Order Number " + orderNumber + ".");}
+    public void displayEditOrderCompletedMessage() {displaySuccess("Order has been modified.");}
+    public void displayRemoveOrderCompletedMessage() {displaySuccess("Order has been removed.");}
+    public void displayExportActiveOrdersCompleted() {displaySuccess("Active orders have been exported.");}
 
     /* ----- Display Items ----- */
 
@@ -128,18 +128,19 @@ public class MainView {
         }
 
         //Display remaining order details
-        userIO.print(
-            "- Customer Name: " + order.getCustomerName() +
-            "\n- State: " + order.getState() +
-            "\n- Tax Rate: " + order.getTaxRate() +
-            "\n- Product Type: " + order.getProductType() +
-            "\n- Area: " + order.getArea() +
-            "\n- Cost Per Square Foot: " + order.getCostPerSquareFoot() +
-            "\n- Labor Cost Per Square Foot: " + order.getLaborCostPerSquareFoot() +
-            "\n- Material Cost: " + order.getMaterialCost() +
-            "\n- Labor Cost: " + order.getLaborCost() +
-            "\n- Tax: " + order.getTax() +
-            "\n- Total: " + order.getTotal()
+        userIO.print((includeOrderNumber ? "  " : "- ") +
+            "Customer Name: " + order.getCustomerName() +
+            "\n  Order Date: " + order.getOrderDate().format(UserIO.DATE_FORMAT) +
+            "\n  State: " + order.getState() +
+            "\n  Tax Rate: " + order.getTaxRate() +
+            "\n  Area: " + order.getArea() +
+            "\n  Product Type: " + order.getProductType() +
+            "\n  Cost Per Square Foot: " + order.getCostPerSquareFoot() +
+            "\n  Labor Cost Per Square Foot: " + order.getLaborCostPerSquareFoot() +
+            "\n  Material Cost: " + order.getMaterialCost() +
+            "\n  Labor Cost: " + order.getLaborCost() +
+            "\n  Tax: " + order.getTax() +
+            "\n  Total: " + order.getTotal()
         );
     }
 
@@ -150,10 +151,10 @@ public class MainView {
 
         } else {
             userIO.print("Displaying orders for " + date.format(UserIO.DATE_FORMAT) + ":");
-            userIO.print("");
 
             //Display each order one by one
             for (Order order : orders) {
+                userIO.print("");
                 displayOrder(order, true);
             }
 
@@ -231,26 +232,26 @@ public class MainView {
 
         //Obtain customer name
         do {
-            customerName = userIO.readString("Enter Customer Name");
+            customerName = userIO.readString("\nEnter Customer Name");
             customerName = validateCustomerNameInput(customerName);
         } while (customerName == null);
 
         //Obtain a valid state
         do {
-            state = userIO.readString("Enter State Abbreviation");
+            state = userIO.readString("\nEnter State Abbreviation");
             tax = validateStateInput(state, taxStates);
         } while (tax == null);
 
         //Obtain a valid product type
         do {
             displayProducts(productTypes.values());
-            productType = userIO.readString("Enter Product Type");
+            productType = userIO.readString("\nEnter Product Type");
             product = validateProductTypeInput(productType, productTypes);
         } while (product == null);
 
         //Obtain a valid area
         do {
-            area = userIO.readBigDecimal("Enter Area (Sq Ft)", false);
+            area = userIO.readBigDecimal("\nEnter Area (Sq Ft)", false);
             area = validateAreaInput(area);
         } while (area == null);
 
@@ -307,7 +308,7 @@ public class MainView {
 
         //Obtain customer name
         do {
-            customerName = userIO.readString("Enter Customer Name (" + orderCopy.getCustomerName() + ")");
+            customerName = userIO.readString("\nEnter Customer Name (" + orderCopy.getCustomerName() + ")");
 
             //Skip if no input, otherwise validate
             if (customerName.isBlank()) break;
@@ -323,7 +324,7 @@ public class MainView {
 
         //Obtain a valid state
         do {
-            state = userIO.readString("Enter State Abbreviation (" + orderCopy.getState() + ")");
+            state = userIO.readString("\nEnter State Abbreviation (" + orderCopy.getState() + ")");
 
             //Skip if no input, otherwise validate
             if (state.isBlank()) break;
@@ -342,7 +343,7 @@ public class MainView {
         //Obtain a valid product type
         do {
             displayProducts(productTypes.values());
-            productType = userIO.readString("Enter Product Type (" + orderCopy.getProductType() + ")");
+            productType = userIO.readString("\nEnter Product Type (" + orderCopy.getProductType() + ")");
 
             //Skip if no input, otherwise validate
             if (productType.isBlank()) break;
@@ -361,7 +362,7 @@ public class MainView {
 
         //Obtain a valid area
         do {
-            area = userIO.readBigDecimal("Enter Area (" + orderCopy.getArea() + " Sq Ft)", true);
+            area = userIO.readBigDecimal("\nEnter Area (" + orderCopy.getArea() + " Sq Ft)", true);
 
             //Skip if no input, otherwise validate
             if (area == null) break;
@@ -382,14 +383,18 @@ public class MainView {
                 EditIntensity.NO_EDITS_MADE;
     }
 
+    /* ----- Confirmations ----- */
+
     /**
      * Ask the user to confirm if they would like to add a specific order.
      * @param order The order to preview and confirm.
      * @return True for yes, False for no.
      */
     public boolean confirmAddOrder(Order order) {
+
+        userIO.print("\nOrder Preview:");
         displayOrder(order, false);
-        return askYesNoQuestion("Are you sure you wish to add this order?");
+        return askYesNoQuestion("\nAre you sure you wish to add this order?");
     }
 
     /**
@@ -398,8 +403,10 @@ public class MainView {
      * @return True for yes, False for no.
      */
     public boolean confirmEditOrder(Order order) {
+
+        userIO.print("\nEdited Order Preview:");
         displayOrder(order, true);
-        return askYesNoQuestion("Are you sure you wish to update this order?");
+        return askYesNoQuestion("\nAre you sure you wish to update this order?");
     }
 
     /**
@@ -408,8 +415,10 @@ public class MainView {
      * @return True for yes, False for no.
      */
     public boolean confirmRemoveOrder(Order order) {
+
+        userIO.print("\nOrder Preview:");
         displayOrder(order, true);
-        return askYesNoQuestion("Are you sure you wish to remove this order?");
+        return askYesNoQuestion("\nAre you sure you wish to remove this order?");
     }
 
     /* ----- User Input Validation ----- */

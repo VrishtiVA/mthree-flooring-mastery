@@ -58,7 +58,6 @@ public class Order {
     public BigDecimal getTotal() {return total;}
 
     /* ----- Setter Methods ----- */
-    public void setOrderNumber(int orderNumber) {this.orderNumber = orderNumber;}
     public void setOrderDate(LocalDate orderDate) {this.orderDate = orderDate;}
     public void setCustomerName(String customerName) {this.customerName = customerName;}
     public void setState(String state) {this.state = state;}
