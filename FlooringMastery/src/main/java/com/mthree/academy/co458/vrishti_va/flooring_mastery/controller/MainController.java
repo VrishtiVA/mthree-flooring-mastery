@@ -1,6 +1,7 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.controller;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.NoSuchOrderException;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.PersistenceException;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.EditIntensity;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
@@ -191,7 +192,13 @@ public class MainController {
     private void exportActiveOrders() {
         view.displayExportActiveOrdersHeader();
 
-
+        //Export active orders and report completion.
+        try {
+            service.exportActiveOrders();
+            view.displayExportActiveOrdersCompleted();
+        } catch (PersistenceException e) {
+            view.displayExportActiveOrdersFailedWarning();
+        }
     }
 
 }

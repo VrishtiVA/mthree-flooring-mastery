@@ -12,23 +12,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderDaoFileImpl implements OrderDao {
 
     private static final String DELIMITER = "::";
     private final String ORDERS_DIRECTORY;
-    private final String ORDERS_FILENAME_BASE;
+    private final String ORDERS_FILE_NAME_BASE;
+    private final String ORDERS_FILE_EXTENSION;
 
     //Using a nested map for indexed behavior with dates and faster lookups.
     private Map<LocalDate, Map<Integer, Order>> allOrders;
 
     private int lastOrderNumber;
 
-    public OrderDaoFileImpl(String ordersDirectory, String ordersFileNameBase) {
+    public OrderDaoFileImpl(String ordersDirectory, String ordersFileNameBase, String ordersFileExtension) {
 
         this.allOrders = new HashMap<>();
         this.ORDERS_DIRECTORY = ordersDirectory;
-        this.ORDERS_FILENAME_BASE = ordersFileNameBase;
+        this.ORDERS_FILE_NAME_BASE = ordersFileNameBase;
+        this.ORDERS_FILE_EXTENSION = ordersFileExtension;
 
         //Read file initially
         //...
@@ -43,7 +46,7 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     @Override
-    public Order addOrder(LocalDate orderDate, Order order) {
+    public Order addOrder(LocalDate orderDate, Order order) throws PersistenceException {
 
         //Get or create in-memory map for orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.computeIfAbsent(orderDate, key -> new HashMap<>());
@@ -58,7 +61,7 @@ public class OrderDaoFileImpl implements OrderDao {
     }
 
     @Override
-    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException {
+    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException, PersistenceException {
 
         //Find orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.get(orderDate);
@@ -84,7 +87,7 @@ public class OrderDaoFileImpl implements OrderDao {
 
 
     @Override
-    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
+    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException, PersistenceException {
 
         //Find orders on date
         Map<Integer, Order> ordersOnDateMap = allOrders.get(orderDate);
@@ -139,6 +142,21 @@ public class OrderDaoFileImpl implements OrderDao {
             return new ArrayList<>(ordersOnDateMap.values());
         else
             return new ArrayList<>();
+    }
+
+    /**
+     * Get all active orders (orders with an order date of today or in the future).
+     * @return A list of all active orders.
+     * @implNote Using flat map to flatten {@code Collection<Collection<Order>>} into {@code Collection<Order>}.
+     *           <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#flatMap-java.util.function.Function-">Refreshing documentation</a>
+     */
+    @Override
+    public List<Order> getAllActiveOrders() {
+        return allOrders.keySet().stream()
+                .filter(orderDate -> !orderDate.isBefore(LocalDate.now()))
+                .flatMap(orderDate -> allOrders.get(orderDate).values().stream())
+                .collect(Collectors.toList());
+
     }
 
     /**
@@ -206,7 +224,7 @@ public class OrderDaoFileImpl implements OrderDao {
 
         //Open correct file in write mode
         PrintWriter printWriter;
-        String fileName = ORDERS_DIRECTORY + "/" + ORDERS_FILENAME_BASE + orderDate.format(DateTimeFormatter.ofPattern("MMddyyyy")) + ".txt";
+        String fileName = ORDERS_DIRECTORY + "/" + ORDERS_FILE_NAME_BASE + orderDate.format(DateTimeFormatter.ofPattern("MMddyyyy")) + ORDERS_FILE_EXTENSION;
         try {
             printWriter = new PrintWriter(new FileWriter(fileName));
         } catch (IOException e) {

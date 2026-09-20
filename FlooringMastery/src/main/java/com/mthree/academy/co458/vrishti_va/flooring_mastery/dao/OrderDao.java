@@ -15,7 +15,7 @@ public interface OrderDao {
      * @param order The order to add.
      * @return The previous order stored under the order number.
      */
-    public Order addOrder(LocalDate orderDate, Order order);
+    public Order addOrder(LocalDate orderDate, Order order) throws PersistenceException;
 
     /**
      * Edit a specific order, identified by order date and order number,
@@ -26,7 +26,7 @@ public interface OrderDao {
      * @return The original order.
      * @throws NoSuchOrderException If there order to edit didn't exist.
      */
-    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException;
+    public Order editOrder(LocalDate orderDate, int orderNumber, Order editedOrder) throws NoSuchOrderException, PersistenceException;
 
     /**
      * Remove a specific order, identified by order date and order number.
@@ -35,7 +35,7 @@ public interface OrderDao {
      * @return The removed order.
      * @throws NoSuchOrderException If the order to remove didn't exist.
      */
-    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException;
+    public Order removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException, PersistenceException;
 
     /**
      * Get a specific order, identified by order date and order number.
@@ -52,5 +52,11 @@ public interface OrderDao {
      * @return A list of orders with the same order date, never null.
      */
     public List<Order> getOrdersByDate(LocalDate date);
+
+    /**
+     * Get all active orders (orders for today and the future).
+     * @return A list of all active orders.
+     */
+    public List<Order> getAllActiveOrders();
 
 }

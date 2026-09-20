@@ -1,6 +1,7 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.service;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.NoSuchOrderException;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.PersistenceException;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
@@ -40,7 +41,7 @@ public interface MainService {
      * @param order The order to add.
      * @return The newly generated order number for the order.
      */
-    public int addOrder(Order order);
+    public int addOrder(Order order) throws PersistenceException;
 
     /**
      * Edit an order in the system
@@ -48,8 +49,12 @@ public interface MainService {
      * @param editedOrder The edited copy of the order object.
      * @throws NoSuchOrderException If the order to edit didn't originally exist in the system.
      */
-    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException;
+    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException, PersistenceException;
 
-    public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException;
+    public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException, PersistenceException;
+
+    /* ----- Export Services  ----- */
+
+    public void exportActiveOrders() throws PersistenceException;
 
 }

@@ -21,13 +21,13 @@ public class MainServiceImpl implements MainService {
         public MainServiceImpl(
             OrderDao orderDao,
             ProductDao productDao,
-            TaxDao taxDao
-//            ExportDao exportDao
+            TaxDao taxDao,
+            ExportDao exportDao
     ) {
         this.orderDao = orderDao;
         this.productDao = productDao;
         this.taxDao = taxDao;
-//        this.exportDao = exportDao;
+        this.exportDao = exportDao;
     }
 
     /* ----- Calculation Methods ----- */
@@ -114,7 +114,7 @@ public class MainServiceImpl implements MainService {
      * and populated using the details provided in an Order object treated solely as a DTO.
      */
     @Override
-    public int addOrder(Order orderDetails) {
+    public int addOrder(Order orderDetails) throws PersistenceException {
 
         //Generate order number and populate new order object - see implNote
         Order newOrder = new Order(orderDetails, orderDao.getNextOrderNumber());
@@ -127,13 +127,22 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException {
+    public void editOrder(LocalDate orderDate, Order editedOrder) throws NoSuchOrderException, PersistenceException {
         orderDao.editOrder(orderDate, editedOrder.getOrderNumber(), editedOrder);
     }
 
     @Override
-    public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException {
+    public void removeOrder(LocalDate orderDate, int orderNumber) throws NoSuchOrderException, PersistenceException {
         orderDao.removeOrder(orderDate, orderNumber);
+    }
+
+    /* ----- Export Methods ----- */
+
+    @Override
+    public void exportActiveOrders() throws PersistenceException {
+
+        List<Order> activeOrders = orderDao.getAllActiveOrders();
+        exportDao.exportActiveOrders(activeOrders);
     }
 
 }

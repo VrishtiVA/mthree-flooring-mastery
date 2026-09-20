@@ -86,6 +86,10 @@ public class MainView {
         displayWarning("The order to remove no longer exists.");
     }
 
+    public void displayExportActiveOrdersFailedWarning() {
+        displayWarning("Unable to export active orders.");
+    }
+
     public void displayNoOrdersOnDateMessage(LocalDate date) {
         userIO.print("There are no orders for " + date.format(UserIO.DATE_FORMAT) + ".");
     }
@@ -122,6 +126,10 @@ public class MainView {
 
     public void displayRemoveOrderCompletedMessage() {
         userIO.print("\nOrder has been removed.");
+    }
+
+    public void displayExportActiveOrdersCompleted() {
+        userIO.print("\nActive orders have been exported.");
     }
 
     /* ----- Display Items ----- */
@@ -512,5 +520,4 @@ public class MainView {
             return null;
         }
     }
-
 }
