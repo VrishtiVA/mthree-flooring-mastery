@@ -358,7 +358,7 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     @Override
-    public BigDecimal readBigDecimal(String prompt) {
+    public BigDecimal readBigDecimal(String prompt, boolean isOptional) {
 
         //Desired input
         String userInputString;
@@ -367,9 +367,15 @@ public class UserIOConsoleImpl implements UserIO {
         //Retry input until acceptable
         do {
             try {
-                //Prompt the user and take BigDecimal type input
+                //Prompt the user and take user input
                 System.out.print(prompt + ": ");
                 userInputString = this.inputReader.nextLine().trim();
+
+                //Allow return null if input is optional
+                if (isOptional && userInputString.isBlank())
+                    return null;
+
+                //Otherwise try convert to BigDecimal
                 userInput = new BigDecimal(userInputString);
 
                 //If reached here, return valid input

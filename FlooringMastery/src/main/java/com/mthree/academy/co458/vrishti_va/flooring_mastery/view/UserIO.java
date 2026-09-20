@@ -116,9 +116,10 @@ public interface UserIO {
     /**
      * Prompt the user to enter a BigDecimal, read in a BigDecimal input, and return it.
      * @param prompt The prompt message.
-     * @return The corresponding BigDecimal that is read in.
+     * @param isOptional True if the input can be null, otherwise false.
+     * @return The corresponding BigDecimal that is read in, or null if optional and no input provided.
      */
-    BigDecimal readBigDecimal(String prompt);
+    BigDecimal readBigDecimal(String prompt, boolean isOptional);
 
     /**
      * Prompt the user to enter a BigDecimal that is between a specified range, read in the BigDecimal, and return it.
