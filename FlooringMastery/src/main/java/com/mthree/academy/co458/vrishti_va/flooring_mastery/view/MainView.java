@@ -78,17 +78,12 @@ public class MainView {
 
     public void displayUnknownMenuOptionWarning() { displayWarning("Unknown Menu Option."); }
 
-    public void displayEditOrderLostWarning() {
-        displayWarning("The order to edit no longer exists.");
-    }
-
-    public void displayRemoveOrderLostWarning() {
-        displayWarning("The order to remove no longer exists.");
-    }
-
-    public void displayExportActiveOrdersFailedWarning() {
-        displayWarning("Unable to export active orders.");
-    }
+    public void displayEditOrderLostWarning() {displayWarning("The order to edit no longer exists.");}
+    public void displayRemoveOrderLostWarning() {displayWarning("The order to remove no longer exists.");}
+    public void displayAddOrderFailedWarning() {displayWarning("Unable to save new order.");}
+    public void displayEditOrderFailedWarning() {displayWarning("Unable to save order changes.");}
+    public void displayRemoveOrderFailedWarning() {displayWarning("Unable to save order removal.");}
+    public void displayExportActiveOrdersFailedWarning() {displayWarning("Unable to export active orders.");}
 
     public void displayNoOrdersOnDateMessage(LocalDate date) {
         userIO.print("There are no orders for " + date.format(UserIO.DATE_FORMAT) + ".");
@@ -99,7 +94,7 @@ public class MainView {
     }
 
     public void displayNoEditsMadeMessage() {
-        userIO.print("There were no edits were made.");
+        userIO.print("There were no edits made.");
     }
 
     /* ----- Option Headers ----- */
@@ -116,21 +111,12 @@ public class MainView {
 
     /* ----- Operation Complete Messages ----- */
 
-    public void displayAddOrderCompletedMessage(int orderNumber) {
-        userIO.print("\nOrder has been added, with Order Number " + orderNumber + ".");
-    }
+    private void displaySuccess(String message) {userIO.print("Success: " + message);}
 
-    public void displayEditOrderCompletedMessage() {
-        userIO.print("\nOrder has been modified.");
-    }
-
-    public void displayRemoveOrderCompletedMessage() {
-        userIO.print("\nOrder has been removed.");
-    }
-
-    public void displayExportActiveOrdersCompleted() {
-        userIO.print("\nActive orders have been exported.");
-    }
+    public void displayAddOrderCompletedMessage(int orderNumber) {displaySuccess("\nOrder has been added, with Order Number " + orderNumber + ".");}
+    public void displayEditOrderCompletedMessage() {displaySuccess("\nOrder has been modified.");}
+    public void displayRemoveOrderCompletedMessage() {displaySuccess("\nOrder has been removed.");}
+    public void displayExportActiveOrdersCompleted() {displaySuccess("\nActive orders have been exported.");}
 
     /* ----- Display Items ----- */
 

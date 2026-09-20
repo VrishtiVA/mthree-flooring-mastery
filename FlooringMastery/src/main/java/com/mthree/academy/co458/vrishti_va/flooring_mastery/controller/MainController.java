@@ -89,8 +89,14 @@ public class MainController {
         //Ask for confirmation to add order
         int orderNumber;
         if (view.confirmAddOrder(newOrder)) {
-            orderNumber = service.addOrder(newOrder);
-            view.displayAddOrderCompletedMessage(orderNumber);
+            try {
+                //Add order
+                orderNumber = service.addOrder(newOrder);
+                view.displayAddOrderCompletedMessage(orderNumber);
+
+            } catch (PersistenceException e) {
+                view.displayAddOrderFailedWarning();
+            }
         } else {
             view.displayOperationCancelledMessage();
         }
@@ -141,12 +147,15 @@ public class MainController {
         //Ask for confirmation to edit order.
         if (view.confirmEditOrder(orderCopy)) {
             try {
+                //Save edited order
                 service.editOrder(orderDate, orderCopy);
                 view.displayEditOrderCompletedMessage();
 
             } catch (NoSuchOrderException e) {
                 //This shouldn't happen in this implementation, hence a warning.
                 view.displayEditOrderLostWarning();
+            } catch (PersistenceException e) {
+                view.displayEditOrderFailedWarning();
             }
         } else {
             view.displayOperationCancelledMessage();
@@ -176,12 +185,15 @@ public class MainController {
         //Ask for confirmation to remove order.
         if (view.confirmRemoveOrder(order)) {
             try {
+                //Remove order
                 service.removeOrder(orderDate, orderNumber);
                 view.displayRemoveOrderCompletedMessage();
 
             } catch (NoSuchOrderException e) {
                 //This shouldn't happen in this implementation, hence a warning.
                 view.displayRemoveOrderLostWarning();
+            } catch (PersistenceException e) {
+                view.displayRemoveOrderFailedWarning();
             }
         } else {
             view.displayOperationCancelledMessage();
