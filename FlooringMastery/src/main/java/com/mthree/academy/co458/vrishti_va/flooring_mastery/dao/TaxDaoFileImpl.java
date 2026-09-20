@@ -13,7 +13,7 @@ public class TaxDaoFileImpl implements TaxDao {
     private static final String DELIMITER = "::";
     private final String TAX_FILE;
 
-    //Hold mappings of tax state abbreviations to taxes
+    //Hold mappings of tax states to taxes
     private Map<String, Tax> allTaxes;
 
     public TaxDaoFileImpl(String taxFile) {
@@ -43,6 +43,16 @@ public class TaxDaoFileImpl implements TaxDao {
         return new ArrayList<>(allTaxes.values());
     }
 
+    @Override
+    public Map<String, Tax> getAllTaxesIndexedByState() {
+
+        //Read tax file
+        loadTaxesFromFile();
+
+        //Return all taxes in an unmodifiable map
+        return Map.copyOf(allTaxes);
+    }
+
     /**
      * Unmarshall tax String into Tax object.
      * @param taxString The tax String to unmarshall.
@@ -63,7 +73,9 @@ public class TaxDaoFileImpl implements TaxDao {
 
     /**
      * Read the taxes file and reflect its content into the taxes map.
+     * This method assumes the file will include a header row.
      * @throws PersistenceException If the method is unable to read from the taxes file.
+     * @implNote Loading the state key as lower case intends to make searching the map easier.
      */
     private void loadTaxesFromFile() throws PersistenceException {
 
@@ -75,6 +87,9 @@ public class TaxDaoFileImpl implements TaxDao {
             throw new PersistenceException("Unable to load tax details.", e);
         }
 
+        //Skip header row
+        fileScanner.nextLine();
+
         //Read contents of the tax file
         Tax currentTax;
         while (fileScanner.hasNextLine()) {
@@ -83,7 +98,7 @@ public class TaxDaoFileImpl implements TaxDao {
             currentTax = unmarshallTax(fileScanner.nextLine());
 
             //Populate taxes map
-            allTaxes.put(currentTax.getStateAbbreviation(), currentTax);
+            allTaxes.put(currentTax.getStateName().toLowerCase(), currentTax);
         }
     }
 

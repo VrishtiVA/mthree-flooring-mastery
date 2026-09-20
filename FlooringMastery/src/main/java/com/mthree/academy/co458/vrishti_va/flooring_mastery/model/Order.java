@@ -26,6 +26,22 @@ public class Order {
         this.orderNumber = orderNumber;
     }
 
+    public Order(Order orderDetails, int orderNumber) {
+        this.orderNumber = orderNumber;
+        this.orderDate = orderDetails.getOrderDate();
+        this.customerName = orderDetails.getCustomerName();
+        this.state = orderDetails.getState();
+        this.taxRate = orderDetails.getTaxRate();
+        this.productType = orderDetails.getProductType();
+        this.area = orderDetails.getArea();
+        this.costPerSquareFoot = orderDetails.getCostPerSquareFoot();
+        this.laborCostPerSquareFoot = orderDetails.getLaborCostPerSquareFoot();
+        this.materialCost = orderDetails.getMaterialCost();
+        this.laborCost = orderDetails.getLaborCost();
+        this.tax = orderDetails.getTax();
+        this.total = orderDetails.getTotal();
+    }
+
     /* ----- Getter Methods ----- */
     public int getOrderNumber() {return orderNumber;}
     public LocalDate getOrderDate() {return orderDate;}

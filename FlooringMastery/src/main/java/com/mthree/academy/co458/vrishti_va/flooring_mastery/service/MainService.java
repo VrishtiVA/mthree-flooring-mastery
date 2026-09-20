@@ -1,10 +1,12 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.service;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the interface for the main/primary service component that
@@ -14,21 +16,30 @@ public interface MainService {
 
     /* ----- Business Logic: Calculations ----- */
 
-    public BigDecimal calculateMaterialCost(BigDecimal area, BigDecimal costPerSquareFoot);
+    public Order calculateOrderCosts(Order order);
 
-    public BigDecimal calculateLaborCost(BigDecimal area, BigDecimal laborCostPerSquareFoot);
+    /* ----- Product & Tax DAO Interactions ----- */
 
-    public BigDecimal calculateTax(BigDecimal materialCost, BigDecimal laborCost, BigDecimal taxRate);
+    public List<Tax> getAllTaxes();
 
-    public BigDecimal calculateTotal(BigDecimal materialCost, BigDecimal laborCost, BigDecimal tax);
+    public Map<String, Tax> getAllTaxesIndexedByState();
 
-    /* ----- DAO Interactions ----- */
+    public List<Product> getAllProducts();
+
+    public Map<String, Product> getAllProductsIndexedByProductType();
+
+    /* ----- Order DAO Interactions ----- */
 
     public List<Order> getOrdersByDate(LocalDate orderDate);
 
     public Order getOrder(LocalDate orderDate, int orderNumber);
 
-    public void addOrder(LocalDate orderDate, Order order);
+    /**
+     * Add an order to the system.
+     * @param order The order to add.
+     * @return The newly generated order number for the order.
+     */
+    public int addOrder(Order order);
 
     public void editOrder(LocalDate orderDate, int orderNumber, Order editedOrder);
 

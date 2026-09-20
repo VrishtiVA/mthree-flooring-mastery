@@ -43,6 +43,16 @@ public class ProductDaoFileImpl implements ProductDao {
         return new ArrayList<>(allProducts.values());
     }
 
+    @Override
+    public Map<String, Product> getAllProductsIndexedByProductType() {
+
+        //Read products file
+        loadProductsFromFile();
+
+        //Return all products in an unmodifiable map
+        return Map.copyOf(allProducts);
+    }
+
 
     /**
      * Unmarshall product String into Product object.
@@ -64,7 +74,9 @@ public class ProductDaoFileImpl implements ProductDao {
 
     /**
      * Read the products file and reflect its content into the products map.
+     * This method assumes the file will include a header row.
      * @throws PersistenceException If the method is unable to read from the products file.
+     * @implNote Loading the key in lower case intends to help make searching the map easier.
      */
     private void loadProductsFromFile() throws PersistenceException {
 
@@ -76,6 +88,9 @@ public class ProductDaoFileImpl implements ProductDao {
             throw new PersistenceException("Unable to load product details.", e);
         }
 
+        //Skip header row
+        fileScanner.nextLine();
+
         //Read contents of the product file
         Product currentProduct;
         while (fileScanner.hasNextLine()) {
@@ -83,8 +98,8 @@ public class ProductDaoFileImpl implements ProductDao {
             //Read current product line
             currentProduct = unmarshallProduct(fileScanner.nextLine());
 
-            //Populate products map
-            allProducts.put(currentProduct.getProductType(), currentProduct);
+            //Populate products map, with key in lower case.
+            allProducts.put(currentProduct.getProductType().toLowerCase(), currentProduct);
         }
     }
 

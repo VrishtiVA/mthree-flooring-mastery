@@ -1,11 +1,14 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.controller;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
+import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.service.MainService;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.view.MainView;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This controller orchestrates the main/overall program.
@@ -46,6 +49,8 @@ public class MainController {
                 default:
                     view.displayUnknownMenuOptionWarning();
             }
+            view.askToProceed();
+
         } while (keepGoing);
 
         view.displayQuittingProgram();
@@ -67,7 +72,25 @@ public class MainController {
     private void addOrderRoutine() {
         view.displayAddOrderHeader();
 
+        //Get updated product types and tax states
+        Map<String, Product> productTypes = service.getAllProductsIndexedByProductType();
+        Map<String, Tax> taxStates = service.getAllTaxesIndexedByState();
 
+        //Ask for valid order inputs
+        Order newOrder = view.getNewOrder(productTypes, taxStates);
+        if (newOrder == null) return;
+
+        //Calculate costs
+        newOrder = service.calculateOrderCosts(newOrder);
+
+        //Ask for confirmation to add order
+        int orderNumber;
+        if (view.confirmAddOrder(newOrder)) {
+            orderNumber = service.addOrder(newOrder);
+            view.displayAddOrderCompletedMessage(orderNumber);
+        } else {
+            view.displayOperationCancelledMessage();
+        }
     }
 
     private void editOrderRoutine() {

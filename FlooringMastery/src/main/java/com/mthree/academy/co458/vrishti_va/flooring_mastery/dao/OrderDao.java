@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface OrderDao {
 
+    public int getNextOrderNumber();
+
     /**
      * Add an order and return the previous order stored under the order number.
      * @param orderDate The order date.
