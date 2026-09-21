@@ -4,6 +4,8 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.*;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,24 +13,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class MainServiceImpl implements MainService {
 
+    @Autowired
     private OrderDao orderDao;
-    private ProductDao productDao;
-    private TaxDao taxDao;
-    private ExportDao exportDao;
 
-        public MainServiceImpl(
-            OrderDao orderDao,
-            ProductDao productDao,
-            TaxDao taxDao,
-            ExportDao exportDao
-    ) {
-        this.orderDao = orderDao;
-        this.productDao = productDao;
-        this.taxDao = taxDao;
-        this.exportDao = exportDao;
-    }
+    @Autowired
+    private ProductDao productDao;
+
+    @Autowired
+    private TaxDao taxDao;
+
+    @Autowired
+    private ExportDao exportDao;
 
     /* ----- Calculation Methods ----- */
 

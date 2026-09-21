@@ -5,12 +5,14 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.dto.SampleProduct;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dto.SampleTax;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class ProductDaoStubImpl implements ProductDao {
 
     private Map<String, Product> allProducts;

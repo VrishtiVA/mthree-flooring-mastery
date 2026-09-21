@@ -3,12 +3,14 @@ package com.mthree.academy.co458.vrishti_va.flooring_mastery.service;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.TaxDao;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dto.SampleTax;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class TaxDaoStubImpl implements TaxDao {
 
     private Map<String, Tax> allTaxes;

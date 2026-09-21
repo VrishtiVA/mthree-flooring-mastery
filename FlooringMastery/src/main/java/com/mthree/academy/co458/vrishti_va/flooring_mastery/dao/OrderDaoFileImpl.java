@@ -1,6 +1,9 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -10,9 +13,11 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Repository
 public class OrderDaoFileImpl implements OrderDao {
 
     private static final String DELIMITER = "::";
+
     private final String ORDERS_DIRECTORY;
     private final String ORDERS_FILE_NAME_BASE;
     private final String ORDERS_FILE_EXTENSION;
@@ -22,8 +27,11 @@ public class OrderDaoFileImpl implements OrderDao {
 
     private int lastOrderNumber;
 
-    public OrderDaoFileImpl(String ordersDirectory, String ordersFileNameBase, String ordersFileExtension) {
-
+    public OrderDaoFileImpl(
+            @Value(value = "${files.orders.directory}") String ordersDirectory,
+            @Value(value = "${files.orders.file-name-base}") String ordersFileNameBase,
+            @Value(value = "${files.orders.file-extension}") String ordersFileExtension
+    ) {
         this.allOrders = new HashMap<>();
         this.ORDERS_DIRECTORY = ordersDirectory;
         this.ORDERS_FILE_NAME_BASE = ordersFileNameBase;

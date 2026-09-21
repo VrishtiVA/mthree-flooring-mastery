@@ -4,6 +4,9 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.EditIntensity;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,13 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class MainView {
 
+    @Autowired
     private UserIO userIO;
-
-    public MainView(UserIO userIO) {
-        this.userIO = userIO;
-    }
 
     /* ----- Menu ----- */
 

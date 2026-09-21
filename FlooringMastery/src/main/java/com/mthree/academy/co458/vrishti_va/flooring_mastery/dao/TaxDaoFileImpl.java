@@ -1,6 +1,8 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,9 +12,11 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
 
+@Repository
 public class TaxDaoFileImpl implements TaxDao {
 
     private static final String DELIMITER = "::";
+
     private final String TAX_FILE;
     private final File TAX_FILE_POINTER;
     private LocalDateTime taxFileLastRead;
@@ -20,7 +24,7 @@ public class TaxDaoFileImpl implements TaxDao {
     //Hold mappings of tax states abbreviations to taxes
     private Map<String, Tax> allTaxes;
 
-    public TaxDaoFileImpl(String taxFile) {
+    public TaxDaoFileImpl(@Value("${files.taxes.file-name}") String taxFile) {
 
         this.TAX_FILE = taxFile;
         this.TAX_FILE_POINTER = new File(TAX_FILE);

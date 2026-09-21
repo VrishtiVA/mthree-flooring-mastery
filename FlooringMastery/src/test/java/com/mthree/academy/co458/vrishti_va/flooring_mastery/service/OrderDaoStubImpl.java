@@ -5,6 +5,7 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.OrderDao;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dao.PersistenceException;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.dto.SampleOrder;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class OrderDaoStubImpl implements OrderDao {
 
     private int lastOrderNumber;

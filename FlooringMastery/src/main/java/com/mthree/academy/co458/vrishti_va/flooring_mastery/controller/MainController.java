@@ -8,6 +8,8 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.service.MainService;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.view.MainView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,15 +18,14 @@ import java.util.Map;
 /**
  * This controller orchestrates the main/overall program.
  */
+@Controller
 public class MainController {
 
+    @Autowired
     private MainView view;
-    private MainService service;
 
-    public MainController(MainView view, MainService service) {
-        this.view = view;
-        this.service = service;
-    }
+    @Autowired
+    private MainService service;
 
     public void run() {
 

@@ -1,11 +1,14 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.view;
 
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+@Component
 public class UserIOConsoleImpl implements UserIO {
 
     Scanner inputReader;

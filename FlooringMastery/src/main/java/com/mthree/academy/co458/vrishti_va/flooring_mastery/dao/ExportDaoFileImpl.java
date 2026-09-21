@@ -1,6 +1,8 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,12 +13,13 @@ import java.util.List;
 /**
  * Handles write-only to export file.
  */
+@Repository
 public class ExportDaoFileImpl implements ExportDao {
 
     private static final String DELIMITER = "::";
     private final String EXPORT_FILE;
 
-    public ExportDaoFileImpl(String exportFile) {
+    public ExportDaoFileImpl(@Value("${files.exports.file-name}") String exportFile) {
         this.EXPORT_FILE = exportFile;
     }
 

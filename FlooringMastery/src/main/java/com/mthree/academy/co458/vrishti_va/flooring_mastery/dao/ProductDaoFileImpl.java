@@ -1,6 +1,8 @@
 package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,9 +12,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Repository
 public class ProductDaoFileImpl implements ProductDao {
 
     private static final String DELIMITER = "::";
+
     private final String PRODUCT_FILE;
     private final File PRODUCT_FILE_POINTER;
     private LocalDateTime productFileLastRead;
@@ -20,7 +24,7 @@ public class ProductDaoFileImpl implements ProductDao {
     //Hold mappings of product type to product
     private Map<String, Product> allProducts;
 
-    public ProductDaoFileImpl(String productFile) {
+    public ProductDaoFileImpl(@Value("${files.products.file-name}") String productFile) {
         this.PRODUCT_FILE = productFile;
         this.PRODUCT_FILE_POINTER = new File(PRODUCT_FILE);
         this.productFileLastRead = null;

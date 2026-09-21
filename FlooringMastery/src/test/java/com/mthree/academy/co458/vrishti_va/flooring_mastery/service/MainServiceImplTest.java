@@ -8,8 +8,7 @@ import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Order;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Tax;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -44,8 +43,10 @@ class MainServiceImplTest {
     private MainService mainService;
 
     public MainServiceImplTest() {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        this.mainService = applicationContext.getBean("mainService", MainService.class); //Interface type
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+        applicationContext.scan("com.mthree.academy.co458.vrishti_va.flooring_mastery.service");
+        applicationContext.refresh();
+        this.mainService = applicationContext.getBean("mainServiceImpl", MainService.class); //Interface type
     }
 
     @Test
