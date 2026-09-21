@@ -18,6 +18,27 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test Plan:
+ * Using stubs to simulate the behavior of the DAOs.
+ *
+ * Test cases:
+ * - testCalculateOrderCosts -> - Recalculations of a valid object should match the valid object.
+ * - testGetAllTaxes -> Should return the expected taxes in a list.
+ * - testGetAllProducts -> Should return the expected products in a list.
+ * - testGetAllTaxesIndexedByState -> Should return the expected taxes in a map.
+ * - testGetAllProductsIndexedByProductType -> Should return the expected products in a map.
+ * - testGetOrder -> - Trying to get an existing order should be retrievable.
+ *                   - Trying to get a non-existing order should throw a NoSuchOrderException.
+ * - testAddOrder -> - A new order should be given the next available order number.
+ *                   - Attempting to override an order with add order shouldn't work,
+ *                     instead a new order with the next available order number is added.
+ * - testEditOrder -> - Editing an existing order should not throw an error.
+ *                    - Trying to edit a non-existing order should throw a NoSuchOrderException.
+ * - testRemoveOrder -> - Removing an existing order should not throw an error.
+ *                      - Trying to remove a non-existing order should throw a NoSuchOrderException.
+ * - testExportActiveOrders -> Should not throw an error.
+ */
 class MainServiceImplTest {
 
     private MainService mainService;
@@ -36,7 +57,7 @@ class MainServiceImplTest {
         //Act
         Order orderCalculationsUpdated = mainService.calculateOrderCosts(order);
 
-        //Assert - updated calculations match valid object
+        //Assert - That the updated calculations match valid object
         assertEquals(order, orderCalculationsUpdated, "Calculation updates should match the valid object.");
     }
 
@@ -61,7 +82,7 @@ class MainServiceImplTest {
         Map<String, Tax> allTaxes = mainService.getAllTaxesIndexedByState();
 
         //Assert
-        assertNotNull(allTaxes);
+        assertNotNull(allTaxes, "The map of tax states should not be null");
         assertTrue(allTaxes.containsValue(SampleTax.getSampleTax1()));
         assertTrue(allTaxes.containsValue(SampleTax.getSampleTax2()));
         assertTrue(allTaxes.containsValue(SampleTax.getSampleTax3()));
@@ -75,7 +96,7 @@ class MainServiceImplTest {
         List<Product> allProducts = mainService.getAllProducts();
 
         //Assert
-        assertNotNull(allProducts);
+        assertNotNull(allProducts, "The list of product types should not be null");
         assertTrue(allProducts.contains(SampleProduct.getSampleProduct1()));
         assertTrue(allProducts.contains(SampleProduct.getSampleProduct2()));
         assertTrue(allProducts.contains(SampleProduct.getSampleProduct3()));
@@ -89,7 +110,7 @@ class MainServiceImplTest {
         Map<String, Product> allProducts = mainService.getAllProductsIndexedByProductType();
 
         //Assert
-        assertNotNull(allProducts);
+        assertNotNull(allProducts, "The map of product types should not be null");
         assertTrue(allProducts.containsValue(SampleProduct.getSampleProduct1()));
         assertTrue(allProducts.containsValue(SampleProduct.getSampleProduct2()));
         assertTrue(allProducts.containsValue(SampleProduct.getSampleProduct3()));
@@ -110,8 +131,8 @@ class MainServiceImplTest {
         List<Order> ordersOnDate = mainService.getOrdersByDate(orderDate);
 
         //Assert
-        assertNotNull(ordersOnDate);
-        assertEquals(2, ordersOnDate.size());
+        assertNotNull(ordersOnDate, "The orders list should not be null");
+        assertEquals(2, ordersOnDate.size(), "There should be 2 orders retrieved.");
         assertTrue(ordersOnDate.contains(order1));
         assertTrue(ordersOnDate.contains(order2));
     }
@@ -128,11 +149,11 @@ class MainServiceImplTest {
         Order retrievedOrder = mainService.getOrder(orderDate, 1);
 
         //Assert
-        assertEquals(order1, retrievedOrder);
+        assertEquals(order1, retrievedOrder, "The existing order should be retrieved.");
     }
 
     @Test
-    void getOrderNotExisting() {
+    void testGetOrderNotExisting() {
 
         //Arrange
         LocalDate orderDate = LocalDate.parse("01012028", DateTimeFormatter.ofPattern("MMddyyyy"));
@@ -177,7 +198,7 @@ class MainServiceImplTest {
         int orderNumber = mainService.addOrder(order);
 
         //Assert
-        assertEquals(3, orderNumber, "The next assigned order number should be 3, as the order is not overriden when adding.");
+        assertEquals(3, orderNumber, "The next assigned order number should be 3, as the order is not overridden when adding.");
     }
 
     @Test
@@ -257,7 +278,7 @@ class MainServiceImplTest {
     }
 
     @Test
-    void exportActiveOrders() {
+    void testExportActiveOrders() {
 
         try {
             //Act

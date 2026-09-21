@@ -20,6 +20,9 @@ class TaxDaoFileImplTest {
         this.taxDao = new TaxDaoFileImpl(TEST_TAX_FILE);
     }
 
+    /**
+     * Test that all expected tax states are returned in a list
+     */
     @Test
     void testGetAllTaxes() {
 
@@ -27,8 +30,8 @@ class TaxDaoFileImplTest {
         List<Tax> allTaxes = taxDao.getAllTaxes();
 
         //Assert
-        assertNotNull(allTaxes);
-        assertEquals(4, allTaxes.size());
+        assertNotNull(allTaxes, "The returned taxes should not be null");
+        assertEquals(4, allTaxes.size(), "4 taxes should have been found in the list.");
         assertTrue(allTaxes.containsAll(List.of(
             SampleTax.getSampleTax1(),
             SampleTax.getSampleTax2(),
@@ -37,6 +40,9 @@ class TaxDaoFileImplTest {
         )));
     }
 
+    /**
+     * Test that all expected tax states are returned in a map.
+     */
     @Test
     void testGetAllTaxesIndexedByState() {
 
@@ -44,11 +50,11 @@ class TaxDaoFileImplTest {
         Map<String, Tax> allTaxes = taxDao.getAllTaxesIndexedByState();
 
         //Assert
-        assertNotNull(allTaxes);
-        assertEquals(4, allTaxes.size());
-        assertEquals(allTaxes.get(SampleTax.getSampleTax1().getStateAbbreviation().toUpperCase()), SampleTax.getSampleTax1());
-        assertEquals(allTaxes.get(SampleTax.getSampleTax2().getStateAbbreviation().toUpperCase()), SampleTax.getSampleTax2());
-        assertEquals(allTaxes.get(SampleTax.getSampleTax3().getStateAbbreviation().toUpperCase()), SampleTax.getSampleTax3());
-        assertEquals(allTaxes.get(SampleTax.getSampleTax4().getStateAbbreviation().toUpperCase()), SampleTax.getSampleTax4());
+        assertNotNull(allTaxes, "The returned taxes should not be null");
+        assertEquals(4, allTaxes.size(), "4 taxes should have been found in the map.");
+        assertEquals(SampleTax.getSampleTax1(), allTaxes.get(SampleTax.getSampleTax1().getStateAbbreviation().toUpperCase()));
+        assertEquals(SampleTax.getSampleTax2(), allTaxes.get(SampleTax.getSampleTax2().getStateAbbreviation().toUpperCase()));
+        assertEquals(SampleTax.getSampleTax3(), allTaxes.get(SampleTax.getSampleTax3().getStateAbbreviation().toUpperCase()));
+        assertEquals(SampleTax.getSampleTax4(), allTaxes.get(SampleTax.getSampleTax4().getStateAbbreviation().toUpperCase()));
     }
 }

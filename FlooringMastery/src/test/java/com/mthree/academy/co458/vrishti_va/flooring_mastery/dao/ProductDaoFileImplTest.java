@@ -22,6 +22,9 @@ class ProductDaoFileImplTest {
         this.productDao = new ProductDaoFileImpl(TEST_PRODUCT_FILE);
     }
 
+    /**
+     * Test that all expected products are returned in a list.
+     */
     @Test
     void testGetAllProducts() {
 
@@ -29,8 +32,8 @@ class ProductDaoFileImplTest {
         List<Product> allProducts = productDao.getAllProducts();
 
         //Assert
-        assertNotNull(allProducts);
-        assertEquals(4, allProducts.size());
+        assertNotNull(allProducts, "The returned products list should not be null");
+        assertEquals(4, allProducts.size(), "The returned products list should contain 4 products");
         assertTrue(allProducts.containsAll(List.of(
                 SampleProduct.getSampleProduct1(),
                 SampleProduct.getSampleProduct2(),
@@ -39,18 +42,21 @@ class ProductDaoFileImplTest {
         )));
     }
 
+    /**
+     * Test that all expected products are returned in a map
+     */
     @Test
-    void getAllProductsIndexedByProductType() {
+    void testGetAllProductsIndexedByProductType() {
 
         //Act
         Map<String, Product> allProducts = productDao.getAllProductsIndexedByProductType();
 
         //Assert
-        assertNotNull(allProducts);
-        assertEquals(4, allProducts.size());
-        assertEquals(allProducts.get(SampleProduct.getSampleProduct1().getProductType().toUpperCase()), SampleProduct.getSampleProduct1());
-        assertEquals(allProducts.get(SampleProduct.getSampleProduct2().getProductType().toUpperCase()), SampleProduct.getSampleProduct2());
-        assertEquals(allProducts.get(SampleProduct.getSampleProduct3().getProductType().toUpperCase()), SampleProduct.getSampleProduct3());
-        assertEquals(allProducts.get(SampleProduct.getSampleProduct4().getProductType().toUpperCase()), SampleProduct.getSampleProduct4());
+        assertNotNull(allProducts, "The returned products map should not be null.");
+        assertEquals(4, allProducts.size(), "The returned products map should contain 4 products");
+        assertEquals(SampleProduct.getSampleProduct1(), allProducts.get(SampleProduct.getSampleProduct1().getProductType().toUpperCase()));
+        assertEquals(SampleProduct.getSampleProduct2(), allProducts.get(SampleProduct.getSampleProduct2().getProductType().toUpperCase()));
+        assertEquals(SampleProduct.getSampleProduct3(), allProducts.get(SampleProduct.getSampleProduct3().getProductType().toUpperCase()));
+        assertEquals(SampleProduct.getSampleProduct4(), allProducts.get(SampleProduct.getSampleProduct4().getProductType().toUpperCase()));
     }
 }

@@ -20,25 +20,24 @@ import static org.junit.jupiter.api.Assertions.*;
  * - testGetNextOrderNumberInitial() -> 1
  * - testGetNextOrderNumberNotInitial() -> 2 after adding another order first.
  * testAddOrder
- * - testAddOrderInitial()
- * - testAddOrderOverride()
- * - testAddOrderSameDate()
+ * - testAddOrderInitial() -> Initial order added should previously be null, be retrievable after being added.
+ * - testAddOrderOverride() -> The previous order should be returned, and the override should be retrievable.
+ * - testAddOrderSameDate() -> Should be able to retrieve the correct order added, even when another order for that date also exists.
  * testEditOrder
- * - testEditOrderReplaces()
+ * - testEditOrderReplaces() -> The original order should be returned, and the edited order should be retrievable.
  * - testEditOrderNoSuchOrder() -> Throws No Such Order
  * testRemoveOrder
- * - testRemoveOrderRemoves()
+ * - testRemoveOrderRemoves() -> The removed order should be returned, and the removed order should not be retrievable.
  * - testRemoveOrderNoSuchOrder() -> Throws No Such Order
  * testGetOrder
- * - testGetOrderInitial()
- * - testGetOrderNotInitial()
+ * - testGetOrder() -> When multiple orders exist, the retrieved order should match the order to get.
  * - testGetOrderNoSuchOrder() -> Throws No Such Order
  * testGetOrdersByDate()
- * - testGetOrdersByDate()
- * - testGetOrdersByDateEmpty() -> Empty list
+ * - testGetOrdersByDate() -> When multiple orders exist (2 on date, 1 on another date), only a list containing the orders on the date should be returned.
+ * - testGetOrdersByDateEmpty() -> An empty list that is not null
  * testGetAllActiveOrders
- * - testGetAllActiveOrders()
- * - testGetAllActiveOrdersEmpty() -> Empty list
+ * - testGetAllActiveOrders() -> When multiple orders exist (2 on active, 1 inactive), only a list containing the active orders should be returned.
+ * - testGetAllActiveOrdersEmpty() -> An empty list that is not null
  */
 class OrderDaoFileImplTest {
 
@@ -255,22 +254,7 @@ class OrderDaoFileImplTest {
     }
 
     @Test
-    void testGetOrderInitial() {
-
-        //Arrange - Add initial order
-        Order order = SampleOrder.getSampleOrder1();
-        order = new Order(order, orderDao.getNextOrderNumber());
-        orderDao.addOrder(order.getOrderDate(), order);
-
-        //Act
-        Order retrievedOrder = orderDao.getOrder(order.getOrderDate(), order.getOrderNumber());
-
-        //Assert
-        assertEquals(order, retrievedOrder, "Retrieved order should match order to get.");
-    }
-
-    @Test
-    void testGetOrderNotInitial() {
+    void testGetOrderExisting() {
 
         //Arrange - Add initial order
         Order order = SampleOrder.getSampleOrder2();
@@ -325,7 +309,7 @@ class OrderDaoFileImplTest {
     @Test
     void testGetAllActiveOrders() {
 
-        //Arrange
+        //Arrange - Add 3 orders (2 active, 1 inactive)
         Order order1 = new Order(SampleOrder.getSampleOrder1(), orderDao.getNextOrderNumber());
         Order order2 = new Order(SampleOrder.getSampleOrder2(), orderDao.getNextOrderNumber());
         Order order3 = new Order(SampleOrder.getSampleOrder3(), orderDao.getNextOrderNumber());
