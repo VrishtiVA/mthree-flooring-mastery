@@ -68,35 +68,6 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     @Override
-    public Integer readInt(String prompt, boolean isEscapable) {
-
-        //Desired input
-        String userInputString;
-        int userInput;
-
-        //Retry input until acceptable
-        do {
-            try {
-                //Prompt the user and take int input
-                System.out.print(prompt + ": ");
-                userInputString = this.inputReader.nextLine().trim();
-
-                if (userInputString.equalsIgnoreCase("ESC")) {
-                    return null;
-                } else {
-                    userInput = Integer.parseInt(userInputString);
-                }
-
-                //If reached here, return valid input
-                return userInput;
-
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input, please try again.");
-            }
-        } while (true);
-    }
-
-    @Override
     public int readInt(String prompt, int min, int max) {
 
         //Desired input
@@ -326,38 +297,6 @@ public class UserIOConsoleImpl implements UserIO {
                 //Parse the date input
                 if (userInputString.isBlank()) {
                     throw new IllegalArgumentException();
-                } else {
-                    userInput = LocalDate.parse(userInputString, DATE_FORMAT);
-                }
-
-                //If reached here, return valid input.
-                return userInput;
-
-            } catch (DateTimeParseException | IllegalArgumentException e) {
-                System.out.printf("Invalid input, you should provide a valid date in %s format. Please try again.\n", DATE_FORMAT_PATTERN);
-            }
-        } while (true);
-    }
-
-    @Override
-    public LocalDate readDate(String prompt, boolean isEscapable) {
-
-        //Desired input
-        LocalDate userInput;
-        String userInputString;
-
-        //Retry input until acceptable
-        do {
-            try {
-                //Prompt the user and take input for date
-                System.out.print(prompt + ": ");
-                userInputString = this.inputReader.nextLine().trim();
-
-                //Parse the date input
-                if (userInputString.isBlank()) {
-                    throw new IllegalArgumentException();
-                } else if (userInputString.equalsIgnoreCase("ESC")) {
-                    return null;
                 } else {
                     userInput = LocalDate.parse(userInputString, DATE_FORMAT);
                 }

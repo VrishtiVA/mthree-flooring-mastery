@@ -71,7 +71,7 @@ public class MainController {
         view.displayDisplayOrdersHeader();
 
         //Ask for order date
-        LocalDate orderDate = view.askForOrderDate(false);
+        LocalDate orderDate = view.askForOrderDate();
 
         //Get appropriate orders
         List<Order> orders = service.getOrdersByDate(orderDate);
@@ -113,47 +113,22 @@ public class MainController {
     private void editOrderRoutine() {
         view.displayEditOrderHeader();
 
-        LocalDate orderDate;
-        do {
-            //Get order date
-            orderDate = view.askForOrderDate(true);
+        //Get order date - Shortcut out if no orders for this date
+        LocalDate orderDate = view.askForOrderDate();
+        if (service.getOrdersByDate(orderDate).isEmpty()) {
+            view.displayNoOrdersOnDateMessage(orderDate);
+            return;
+        }
 
-            //If user escaped date input
-            if (orderDate == null) {
-                view.displayOperationAbandonedMessage();
-                return;
-            }
-
-            //Check if any orders for date
-            if (service.getOrdersByDate(orderDate).isEmpty()) {
-                view.displayNoOrdersOnDateMessage(orderDate);
-                continue;
-            }
-
-            break;
-        } while (true);
-
+        //Get order by order number - Shortcut out if no such order for this date
         Order order;
-        Integer orderNumber;
-        do {
-            //Get order by order number
-            orderNumber = view.askForOrderNumber(true);
-
-            //If user escaped input
-            if (orderNumber == null) {
-                view.displayOperationAbandonedMessage();
-                return;
-            }
-
-            //Get order - checking if it exists.
-            try {
-                order = service.getOrder(orderDate, orderNumber);
-                break;
-
-            } catch (NoSuchOrderException e) {
-                view.displayNoSuchOrderMessage();
-            }
-        } while (true);
+        int orderNumber = view.askForOrderNumber();
+        try {
+            order = service.getOrder(orderDate, orderNumber);
+        } catch (NoSuchOrderException e) {
+            view.displayNoSuchOrderMessage();
+            return;
+        }
 
         //Get updated product types and tax states
         Map<String, Product> productTypes = service.getAllProductsIndexedByProductType();
@@ -198,47 +173,22 @@ public class MainController {
     private void removeOrderRoutine() {
         view.displayRemoveOrderHeader();
 
-        LocalDate orderDate;
-        do {
-            //Get order date
-            orderDate = view.askForOrderDate(true);
+        //Get order date - Shortcut out if no orders for this date
+        LocalDate orderDate = view.askForOrderDate();
+        if (service.getOrdersByDate(orderDate).isEmpty()) {
+            view.displayNoOrdersOnDateMessage(orderDate);
+            return;
+        }
 
-            //If user escaped date input
-            if (orderDate == null) {
-                view.displayOperationAbandonedMessage();
-                return;
-            }
-
-            //Check if any orders for date
-            if (service.getOrdersByDate(orderDate).isEmpty()) {
-                view.displayNoOrdersOnDateMessage(orderDate);
-                continue;
-            }
-
-            break;
-        } while (true);
-
+        //Get order by order number - Shortcut out if no such order for this date
         Order order;
-        Integer orderNumber;
-        do {
-            //Get order by order number
-            orderNumber = view.askForOrderNumber(true);
-
-            //If user escaped input
-            if (orderNumber == null) {
-                view.displayOperationAbandonedMessage();
-                return;
-            }
-
-            //Get order - checking if it exists.
-            try {
-                order = service.getOrder(orderDate, orderNumber);
-                break;
-
-            } catch (NoSuchOrderException e) {
-                view.displayNoSuchOrderMessage();
-            }
-        } while (true);
+        int orderNumber = view.askForOrderNumber();
+        try {
+            order = service.getOrder(orderDate, orderNumber);
+        } catch (NoSuchOrderException e) {
+            view.displayNoSuchOrderMessage();
+            return;
+        }
 
         //Ask for confirmation to remove order.
         if (view.confirmRemoveOrder(order)) {
