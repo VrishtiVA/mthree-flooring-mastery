@@ -71,7 +71,7 @@ public class MainController {
         view.displayDisplayOrdersHeader();
 
         //Ask for order date
-        LocalDate orderDate = view.askForOrderDate();
+        LocalDate orderDate = view.askForOrderDate(false);
 
         //Get appropriate orders
         List<Order> orders = service.getOrdersByDate(orderDate);
@@ -110,28 +110,67 @@ public class MainController {
         }
     }
 
-    /**
-     * @implNote To be adjusted to add EXIT option to abandon (indicated by design).
-     */
     private void editOrderRoutine() {
         view.displayEditOrderHeader();
 
-        //Get order date - Check if any orders for date, otherwise shortcut out.
-        LocalDate orderDate = view.askForOrderDate();
-        if (service.getOrdersByDate(orderDate).isEmpty()) {
-            view.displayNoOrdersOnDateMessage(orderDate);
-            return;
-        }
+//        //Get order date - Check if any orders for date, otherwise shortcut out.
+//        LocalDate orderDate = view.askForOrderDate(true);
+//        if (service.getOrdersByDate(orderDate).isEmpty()) {
+//            view.displayNoOrdersOnDateMessage(orderDate);
+//            return;
+//        }
+//
+//        //Get order by order number - If not exist, shortcut out
+//        Order order;
+//        int orderNumber = view.askForOrderNumber(true);
+//        try {
+//            order = service.getOrder(orderDate, orderNumber);
+//        } catch (NoSuchOrderException e) {
+//            view.displayNoSuchOrderMessage();
+//            return;
+//        }
 
-        //Get order by order number - If not exist, shortcut out
+        LocalDate orderDate;
+        do {
+            //Get order date
+            orderDate = view.askForOrderDate(true);
+
+            //If user escaped date input
+            if (orderDate == null) {
+                view.displayOperationAbandonedMessage();
+                return;
+            }
+
+            //Check if any orders for date
+            if (service.getOrdersByDate(orderDate).isEmpty()) {
+                view.displayNoOrdersOnDateMessage(orderDate);
+                continue;
+            }
+
+            break;
+        } while (true);
+
         Order order;
-        int orderNumber = view.askForOrderNumber();
-        try {
-            order = service.getOrder(orderDate, orderNumber);
-        } catch (NoSuchOrderException e) {
-            view.displayNoSuchOrderMessage();
-            return;
-        }
+        Integer orderNumber;
+        do {
+            //Get order by order number
+            orderNumber = view.askForOrderNumber(true);
+
+            //If user escaped input
+            if (orderNumber == null) {
+                view.displayOperationAbandonedMessage();
+                return;
+            }
+
+            //Get order - checking if it exists.
+            try {
+                order = service.getOrder(orderDate, orderNumber);
+                break;
+
+            } catch (NoSuchOrderException e) {
+                view.displayNoSuchOrderMessage();
+            }
+        } while (true);
 
         //Get updated product types and tax states
         Map<String, Product> productTypes = service.getAllProductsIndexedByProductType();
@@ -170,25 +209,53 @@ public class MainController {
         }
     }
 
+    /**
+     * @implNote Future design upgrade could simplify to prevent asking again for date.
+     */
     private void removeOrderRoutine() {
         view.displayRemoveOrderHeader();
 
-        //Get order date - Check if any orders for date, otherwise shortcut out.
-        LocalDate orderDate = view.askForOrderDate();
-        if (service.getOrdersByDate(orderDate).isEmpty()) {
-            view.displayNoOrdersOnDateMessage(orderDate);
-            return;
-        }
+        LocalDate orderDate;
+        do {
+            //Get order date
+            orderDate = view.askForOrderDate(true);
 
-        //Get order by order number - If not exist, shortcut out
+            //If user escaped date input
+            if (orderDate == null) {
+                view.displayOperationAbandonedMessage();
+                return;
+            }
+
+            //Check if any orders for date
+            if (service.getOrdersByDate(orderDate).isEmpty()) {
+                view.displayNoOrdersOnDateMessage(orderDate);
+                continue;
+            }
+
+            break;
+        } while (true);
+
         Order order;
-        int orderNumber = view.askForOrderNumber();
-        try {
-            order = service.getOrder(orderDate, orderNumber);
-        } catch (NoSuchOrderException e) {
-            view.displayNoSuchOrderMessage();
-            return;
-        }
+        Integer orderNumber;
+        do {
+            //Get order by order number
+            orderNumber = view.askForOrderNumber(true);
+
+            //If user escaped input
+            if (orderNumber == null) {
+                view.displayOperationAbandonedMessage();
+                return;
+            }
+
+            //Get order - checking if it exists.
+            try {
+                order = service.getOrder(orderDate, orderNumber);
+                break;
+
+            } catch (NoSuchOrderException e) {
+                view.displayNoSuchOrderMessage();
+            }
+        } while (true);
 
         //Ask for confirmation to remove order.
         if (view.confirmRemoveOrder(order)) {

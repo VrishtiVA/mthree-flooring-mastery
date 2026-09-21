@@ -37,6 +37,14 @@ public interface UserIO {
     int readInt(String prompt);
 
     /**
+     * Prompt the user to enter in an integer, read in an int input, and return it.
+     * @param prompt The prompt message.
+     * @param isEscapable True if the user can type "ESC" to escape input
+     * @return The int value that is read in.
+     */
+    Integer readInt(String prompt, boolean isEscapable);
+
+    /**
      * Prompt the user to enter an integer between a specified range, read in an int input, and return it.
      * If the number is not within the correct range, keep prompting the user for new input until it is.
      * @param prompt The prompt message.
@@ -103,6 +111,14 @@ public interface UserIO {
      * @return The corresponding LocalDate that is read in.
      */
     LocalDate readDate(String prompt);
+
+    /**
+     * Prompt the user to enter a date, read in a date input, and return it.
+     * @param isEscapable True if user can type "ESC" to escape input.
+     * @param prompt The prompt message.
+     * @return The corresponding LocalDate that is read in, or null if user typed "ESC".
+     */
+    LocalDate readDate(String prompt, boolean isEscapable);
 
     /**
      * Prompt the user to enter a date that is between a specified range, read in the date, and return it.

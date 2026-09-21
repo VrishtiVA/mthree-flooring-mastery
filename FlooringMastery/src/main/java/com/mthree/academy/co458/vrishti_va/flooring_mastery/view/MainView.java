@@ -35,11 +35,14 @@ public class MainView {
     }
 
     public void displayQuittingProgram() {
-        userIO.print("\nQuitting Program...");
+        userIO.print("\nQuitting Program ...");
     }
 
     public void displayOperationCancelledMessage() {
         userIO.print("\nOperation Cancelled.");
+    }
+    public void displayOperationAbandonedMessage() {
+        userIO.print("\nOperation Abandoned.");
     }
 
     /**
@@ -202,19 +205,28 @@ public class MainView {
     /* ----- Form Style Inputs ----- */
 
     /**
-     * Ask the user to enter an order date
-     * @return The entered order date
+     * Ask the user to enter an order date.
+     * @param isEscapable Indicate if the user can type "ESC" to escape input.
+     * @return The entered order date, or null if escaped.
      */
-    public LocalDate askForOrderDate() {
-        return userIO.readDate("\nEnter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")");
+    public LocalDate askForOrderDate(boolean isEscapable) {
+        return userIO.readDate(
+            (isEscapable ? "\n[Type ESC to return to Main Menu]" : "") +
+                "\nEnter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")",
+            true
+        );
     }
 
     /**
-     * Ask the user to enter an order number
-     * @return The entered order date
+     * Ask the user to enter an order number.
+     * @param isEscapable Indicate if the user can type "ESC" to escape input.
+     * @return The entered order date, or null if escaped.
      */
-    public int askForOrderNumber() {
-        return userIO.readInt("\nEnter Order Number");
+    public Integer askForOrderNumber(boolean isEscapable) {
+        return userIO.readInt(
+            (isEscapable ? "\n[Type ESC to return to Main Menu]" : "") + "\nEnter Order Number",
+            true
+        );
     }
 
     /**
