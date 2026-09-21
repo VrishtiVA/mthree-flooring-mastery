@@ -28,8 +28,12 @@ public class MainController {
 
     public void run() {
 
+        boolean shouldEndAskToProceed;
         boolean keepGoing = true;
         do {
+            shouldEndAskToProceed = true;
+
+            //Menu selection to action.
             switch (view.displayAndGetMenuSelection()) {
                 case 1:
                     displayOrdersRoutine();
@@ -48,14 +52,18 @@ public class MainController {
                     break;
                 case 6:
                     keepGoing = false;
+                    shouldEndAskToProceed = false;
                     break;
                 default:
                     view.displayUnknownMenuOptionWarning();
             }
-            view.askToProceed();
+
+            //Ask to proceed
+            if (shouldEndAskToProceed) view.askToProceed();
 
         } while (keepGoing);
 
+        //End of program display
         view.displayQuittingProgram();
     }
 

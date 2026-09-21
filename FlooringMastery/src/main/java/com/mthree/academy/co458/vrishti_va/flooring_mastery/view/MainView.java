@@ -31,7 +31,7 @@ public class MainView {
             "\n5. Export Active Orders" +
             "\n6. Quit"
         );
-        return userIO.readInt("Enter Selection (#)", 1, 6);
+        return userIO.readInt("\nEnter Selection (#)", 1, 6);
     }
 
     public void displayQuittingProgram() {
@@ -49,6 +49,12 @@ public class MainView {
         userIO.readLine("Press enter to proceed ...");
     }
 
+    /**
+     * Prompt the user to answer a Yes or No question, and indicate either Yes or No.
+     * The method looks for indication using the first significant character in the input.
+     * @param prompt The prompt to display.
+     * @return True if indicated Yes, otherwise No.
+     */
     public boolean askYesNoQuestion(String prompt) {
 
         //Desired input
@@ -120,6 +126,11 @@ public class MainView {
 
     /* ----- Display Items ----- */
 
+    /**
+     * Display the contents of a single order
+     * @param order The order to display
+     * @param includeOrderNumber True if the display should include the order number, otherwise false.
+     */
     public void displayOrder(Order order, boolean includeOrderNumber) {
 
         //Only display order number if provided
@@ -144,13 +155,18 @@ public class MainView {
         );
     }
 
+    /**
+     * Display multiple orders for the same date.
+     * @param date The date to display
+     * @param orders The orders to display
+     */
     public void displayOrdersForDate(LocalDate date, List<Order> orders) {
 
         if (orders.isEmpty()) {
             displayNoOrdersOnDateMessage(date);
 
         } else {
-            userIO.print("Displaying orders for " + date.format(UserIO.DATE_FORMAT) + ":");
+            userIO.print("\nDisplaying orders for " + date.format(UserIO.DATE_FORMAT) + ":");
 
             //Display each order one by one
             for (Order order : orders) {
@@ -185,12 +201,20 @@ public class MainView {
 
     /* ----- Form Style Inputs ----- */
 
+    /**
+     * Ask the user to enter an order date
+     * @return The entered order date
+     */
     public LocalDate askForOrderDate() {
-        return userIO.readDate("Enter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")");
+        return userIO.readDate("\nEnter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")");
     }
 
+    /**
+     * Ask the user to enter an order number
+     * @return The entered order date
+     */
     public int askForOrderNumber() {
-        return userIO.readInt("Enter Order Number");
+        return userIO.readInt("\nEnter Order Number");
     }
 
     /**
@@ -228,7 +252,7 @@ public class MainView {
         Product product;
 
         //Obtain a valid date between today and the future.
-        orderDate = userIO.readDate("Enter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")", LocalDate.now(), null);
+        orderDate = userIO.readDate("\nEnter Order Date (" + UserIO.DATE_FORMAT_PATTERN + ")", LocalDate.now(), null);
 
         //Obtain customer name
         do {
@@ -302,11 +326,11 @@ public class MainView {
         Tax tax;
         Product product;
 
-        //Flag to indicate if recalculations are needed.
+        //Flags to indicate edits or if recalculations are needed.
         boolean editsMade = false;
         boolean recalculationsRequired = false;
 
-        //Obtain customer name
+        //Allow user to optionally edit customer name
         do {
             customerName = userIO.readString("\nEnter Customer Name (" + orderCopy.getCustomerName() + ")");
 
@@ -322,45 +346,49 @@ public class MainView {
 
         } while (customerName == null);
 
-        //Obtain a valid state
-        do {
-            state = userIO.readString("\nEnter State Abbreviation (" + orderCopy.getState() + ")");
+        if (!taxStates.isEmpty()) {
+            //Allow user to optionally edit state
+            do {
+                state = userIO.readString("\nEnter State Abbreviation (" + orderCopy.getState() + ")");
 
-            //Skip if no input, otherwise validate
-            if (state.isBlank()) break;
-            tax = validateStateInput(state, taxStates);
+                //Skip if no input, otherwise validate
+                if (state.isBlank()) break;
+                tax = validateStateInput(state, taxStates);
 
-            //If valid, hold tax updates and indicate recalculation required.
-            if (tax != null) {
-                orderCopy.setState(tax.getStateAbbreviation());
-                orderCopy.setTaxRate(tax.getTaxRate());
-                editsMade = true;
-                recalculationsRequired = true;
-            }
+                //If valid, hold tax updates and indicate recalculation required.
+                if (tax != null) {
+                    orderCopy.setState(tax.getStateAbbreviation());
+                    orderCopy.setTaxRate(tax.getTaxRate());
+                    editsMade = true;
+                    recalculationsRequired = true;
+                }
 
-        } while (tax == null);
+            } while (tax == null);
+        }
 
-        //Obtain a valid product type
-        do {
-            displayProducts(productTypes.values());
-            productType = userIO.readString("\nEnter Product Type (" + orderCopy.getProductType() + ")");
+        if (!productTypes.isEmpty()) {
+            //Allow user to optionally edit product type
+            do {
+                displayProducts(productTypes.values());
+                productType = userIO.readString("\nEnter Product Type (" + orderCopy.getProductType() + ")");
 
-            //Skip if no input, otherwise validate
-            if (productType.isBlank()) break;
-            product = validateProductTypeInput(productType, productTypes);
+                //Skip if no input, otherwise validate
+                if (productType.isBlank()) break;
+                product = validateProductTypeInput(productType, productTypes);
 
-            //If valid, hold product updates and indicate recalculation required.
-            if (product != null) {
-                orderCopy.setProductType(product.getProductType());
-                orderCopy.setCostPerSquareFoot(product.getCostPerSquareFoot());
-                orderCopy.setLaborCostPerSquareFoot(product.getLaborCostPerSquareFoot());
-                editsMade = true;
-                recalculationsRequired = true;
-            }
+                //If valid, hold product updates and indicate recalculation required.
+                if (product != null) {
+                    orderCopy.setProductType(product.getProductType());
+                    orderCopy.setCostPerSquareFoot(product.getCostPerSquareFoot());
+                    orderCopy.setLaborCostPerSquareFoot(product.getLaborCostPerSquareFoot());
+                    editsMade = true;
+                    recalculationsRequired = true;
+                }
 
-        } while (product == null);
+            } while (product == null);
+        }
 
-        //Obtain a valid area
+        //Allow user to optionally edit area
         do {
             area = userIO.readBigDecimal("\nEnter Area (" + orderCopy.getArea() + " Sq Ft)", true);
 
@@ -515,4 +543,5 @@ public class MainView {
             return null;
         }
     }
+
 }
