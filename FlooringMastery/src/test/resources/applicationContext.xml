@@ -1,0 +1,19 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+                http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="taxDaoStub" class="com.mthree.academy.co458.vrishti_va.flooring_mastery.service.TaxDaoStubImpl"/>
+    <bean id="productDaoStub" class="com.mthree.academy.co458.vrishti_va.flooring_mastery.service.ProductDaoStubImpl"/>
+    <bean id="orderDaoStub" class="com.mthree.academy.co458.vrishti_va.flooring_mastery.service.OrderDaoStubImpl"/>
+    <bean id="exportDaoStub" class="com.mthree.academy.co458.vrishti_va.flooring_mastery.service.ExportDaoStubImpl"/>
+
+    <bean id="mainService" class="com.mthree.academy.co458.vrishti_va.flooring_mastery.service.MainServiceImpl">
+        <constructor-arg ref="orderDaoStub" />
+        <constructor-arg ref="productDaoStub" />
+        <constructor-arg ref="taxDaoStub" />
+        <constructor-arg ref="exportDaoStub" />
+    </bean>
+
+</beans>
