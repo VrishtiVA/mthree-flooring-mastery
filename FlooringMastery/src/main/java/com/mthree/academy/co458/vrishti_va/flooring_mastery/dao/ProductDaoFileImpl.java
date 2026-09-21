@@ -3,21 +3,27 @@ package com.mthree.academy.co458.vrishti_va.flooring_mastery.dao;
 import com.mthree.academy.co458.vrishti_va.flooring_mastery.model.Product;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ProductDaoFileImpl implements ProductDao {
 
     private static final String DELIMITER = "::";
     private final String PRODUCT_FILE;
+    private final File PRODUCT_FILE_POINTER;
+    private LocalDateTime productFileLastRead;
 
     //Hold mappings of product type to product
     private Map<String, Product> allProducts;
 
     public ProductDaoFileImpl(String productFile) {
         this.PRODUCT_FILE = productFile;
+        this.PRODUCT_FILE_POINTER = new File(PRODUCT_FILE);
+        this.productFileLastRead = null;
         this.allProducts = new HashMap<>();
     }
 
@@ -37,7 +43,8 @@ public class ProductDaoFileImpl implements ProductDao {
     public List<Product> getAllProducts() throws PersistenceException {
 
         //Read products file - see implNote
-        loadProductsFromFile();
+        if (FileReadOptimiser.doesFileNeedReading(PRODUCT_FILE_POINTER, productFileLastRead))
+            loadProductsFromFile();
 
         //Return all products
         return new ArrayList<>(allProducts.values());
@@ -47,7 +54,8 @@ public class ProductDaoFileImpl implements ProductDao {
     public Map<String, Product> getAllProductsIndexedByProductType() {
 
         //Read products file
-        loadProductsFromFile();
+        if (FileReadOptimiser.doesFileNeedReading(PRODUCT_FILE_POINTER, productFileLastRead))
+            loadProductsFromFile();
 
         //Return all products in an unmodifiable map
         return Map.copyOf(allProducts);
@@ -82,6 +90,7 @@ public class ProductDaoFileImpl implements ProductDao {
 
         //Open file in read mode
         Scanner fileScanner;
+        LocalDateTime readTime = LocalDateTime.now();
         try {
             fileScanner = new Scanner(new BufferedReader(new FileReader(PRODUCT_FILE)));
         } catch (FileNotFoundException e) {
@@ -104,6 +113,7 @@ public class ProductDaoFileImpl implements ProductDao {
 
         //Clean up
         fileScanner.close();
+        this.productFileLastRead = readTime;
     }
 
 }
