@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface OrderDao {
 
+    /**
+     * Get the next order number that can be used for an order.
+     * @return The next order number.
+     */
     public int getNextOrderNumber();
 
     /**

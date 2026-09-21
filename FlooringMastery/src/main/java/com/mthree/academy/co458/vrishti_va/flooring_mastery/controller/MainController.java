@@ -113,23 +113,6 @@ public class MainController {
     private void editOrderRoutine() {
         view.displayEditOrderHeader();
 
-//        //Get order date - Check if any orders for date, otherwise shortcut out.
-//        LocalDate orderDate = view.askForOrderDate(true);
-//        if (service.getOrdersByDate(orderDate).isEmpty()) {
-//            view.displayNoOrdersOnDateMessage(orderDate);
-//            return;
-//        }
-//
-//        //Get order by order number - If not exist, shortcut out
-//        Order order;
-//        int orderNumber = view.askForOrderNumber(true);
-//        try {
-//            order = service.getOrder(orderDate, orderNumber);
-//        } catch (NoSuchOrderException e) {
-//            view.displayNoSuchOrderMessage();
-//            return;
-//        }
-
         LocalDate orderDate;
         do {
             //Get order date
