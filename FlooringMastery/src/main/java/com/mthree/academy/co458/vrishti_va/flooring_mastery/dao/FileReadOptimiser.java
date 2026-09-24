@@ -25,7 +25,7 @@ public interface FileReadOptimiser {
 
         //If tax file is missing, throw error.
         if (lastModifiedMs == 0L) {
-            throw new PersistenceException("Unable to load tax details.");
+            throw new PersistenceException("Unable to load file data.");
         }
 
         //Convert epoch milliseconds to instant (machine time), to local zone, to local date time for use.
