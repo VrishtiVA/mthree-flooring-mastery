@@ -166,10 +166,7 @@ public class MainController {
             view.displayOperationCancelledMessage();
         }
     }
-
-    /**
-     * @implNote Future design upgrade could simplify to prevent asking again for date.
-     */
+    
     private void removeOrderRoutine() {
         view.displayRemoveOrderHeader();
 
